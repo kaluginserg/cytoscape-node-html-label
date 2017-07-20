@@ -160,7 +160,7 @@
             var handler = throttle(function () {
                 var cHeight = _cyCanvas.offsetHeight;
                 var cZoom = _cy.zoom();
-                _titlesContainer.style.height = cHeight;
+                _titlesContainer.style.height = cHeight + 'px';
 
                 var html = '';
                 params.forEach(function (p) {

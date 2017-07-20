@@ -1,6 +1,6 @@
 {
   "name": "cytoscape-node-html-label",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "labels for cytoscape nodes",
   "author": "Kalugin Sergey <kalugin.perm@gmail.com> (https://github.com/kaluginserg)",
   "main": "cytoscape-node-html-label.js",
