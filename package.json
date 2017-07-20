@@ -1,6 +1,6 @@
 {
   "name": "cytoscape-node-html-label",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "labels for cytoscape nodes",
   "author": "Kalugin Sergey <kalugin.perm@gmail.com> (https://github.com/kaluginserg)",
   "main": "cytoscape-node-html-label.js",
@@ -25,13 +25,6 @@
   },
   "homepage": "https://github.com/kaluginserg/cytoscape-node-html-label",
   "devDependencies": {
-    "gulp": "^3.8.8",
-    "gulp-jshint": "^1.8.5",
-    "gulp-prompt": "^0.1.1",
-    "gulp-replace": "^0.4.0",
-    "gulp-shell": "^0.2.9",
-    "jshint-stylish": "^1.0.0",
-    "run-sequence": "^1.0.0"
   },
   "peerDependencies": {
     "cytoscape": "^3.0.0"
