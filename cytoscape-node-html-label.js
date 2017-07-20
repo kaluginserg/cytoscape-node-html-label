@@ -73,7 +73,7 @@
                 positions.push('bottom: ' + (this.tWrapHeight - bounds.y1 - diffY) + 'px');
                 break;
             case 'bottom':
-                positions.push('top: ' + (bounds.y2 + diffY) + 'px');
+                positions.push('top: ' + (bounds.y2 - diffY) + 'px');
                 break;
             default:
                 console.error('wrong positionY property!');
