@@ -1,16 +1,22 @@
-;(function () {
+/*jslint browser: true, devel: true */
+(function () {
     'use strict';
 
     // small refactor version throttle of Underscore.js
     function throttle(func, wait) {
-        var context, args, result;
+        var context;
+        var args;
+        var result;
         var timeout = null;
         var previous = 0;
         var later = function () {
             previous = Date.now();
             timeout = null;
             result = func.apply(context, args);
-            if (!timeout) context = args = null;
+            if (!timeout) {
+                args = null;
+                context = null;
+            }
         };
         return function () {
             var now = Date.now();
@@ -24,7 +30,10 @@
                 }
                 previous = now;
                 result = func.apply(context, args);
-                if (!timeout) context = args = null;
+                if (!timeout) {
+                    args = null;
+                    context = null;
+                }
             } else if (!timeout) {
                 timeout = setTimeout(later, remaining);
             }
@@ -34,7 +43,7 @@
 
     var ProtoParam = function (opt, cy) {
         if (!opt || typeof opt !== "object") {
-            opt = {}
+            opt = {};
         }
         this.query = opt.query || 'node';
         this.width = opt.width || 100; // integer number
@@ -43,42 +52,42 @@
         this.wrapCssClasses = opt.wrapCssClasses || '';
         this.fontSizeBase = opt.fontSizeBase || 10;
         this.tpl = opt.tpl || function (data) {
-            return data + ''
+            return data + '';
         };
         this.elems = this.getElems(cy);
 
-        this._fontSize = null;
-        this._wrapHeight = null;
-        this._zoom = null;
-        this._zoomedWidth = null;
+        this.tFontSize = null;
+        this.tWrapHeight = null;
+        this.tZoom = null;
+        this.tZoomedWidth = null;
     };
     ProtoParam.prototype.templateNode = function (cyElem) {
         var bounds = cyElem.renderedBoundingBox({includeEdges: false, includeLabels: false});
         var positions = [];
-        var diffY = ((bounds.y2 - bounds.y1) - cyElem.numericStyle('height') * this._zoom) / 2 || 0;
-        var diffX = ((bounds.x2 - bounds.x1) - cyElem.numericStyle('width') * this._zoom) / 2 || 0;
+        var diffY = ((bounds.y2 - bounds.y1) - cyElem.numericStyle('height') * this.tZoom) / 2 || 0;
+        var diffX = ((bounds.x2 - bounds.x1) - cyElem.numericStyle('width') * this.tZoom) / 2 || 0;
 
         switch (this.positionY) {
             case 'top':
             case 'center':
-                positions.push('bottom: ' + (this._wrapHeight - bounds.y1 - diffY) + 'px');
+                positions.push('bottom: ' + (this.tWrapHeight - bounds.y1 - diffY) + 'px');
                 break;
             case 'bottom':
                 positions.push('top: ' + (bounds.y2 + diffY) + 'px');
                 break;
-            default :
+            default:
                 console.error('wrong positionY property!');
                 positions.push('top: 0');
         }
         switch (this.positionX) {
             case 'center':
-                positions.push('left: ' + ((bounds.x1 + bounds.x2 - this._zoomedWidth) / 2) + 'px');
+                positions.push('left: ' + ((bounds.x1 + bounds.x2 - this.tZoomedWidth) / 2) + 'px');
                 break;
             case 'left':
                 positions.push('left: ' + (bounds.x1 + diffX) + 'px');
                 break;
             case 'right':
-                positions.push('left: ' + (bounds.x2 - this._zoomedWidth - diffX) + 'px');
+                positions.push('left: ' + (bounds.x2 - this.tZoomedWidth - diffX) + 'px');
                 break;
             default :
                 console.error('wrong positionX property!');
@@ -93,17 +102,17 @@
         }
 
         return '<div class="' + this.wrapCssClasses + '" style="' + positions.join('; ')
-            + ';width:' + this._zoomedWidth + 'px;font-size:' + this._fontSize + 'px;position:absolute;display:inline-block;">'
+            + ';width:' + this.tZoomedWidth + 'px;font-size:' + this.tFontSize + 'px;position:absolute;display:inline-block;">'
             + innerTpl
             + '</div>';
     };
     ProtoParam.prototype.updateZoom = function (val) {
-        this._zoom = val;
-        this._fontSize = val * this.fontSizeBase;
-        this._zoomedWidth = this.width * val;
+        this.tZoom = val;
+        this.tFontSize = val * this.fontSizeBase;
+        this.tZoomedWidth = this.width * val;
     };
     ProtoParam.prototype.setWrapHeight = function (val) {
-        this._wrapHeight = val;
+        this.tWrapHeight = val;
     };
     ProtoParam.prototype.getElems = function (cy) {
         return cy.elements(this.query);
@@ -140,7 +149,7 @@
             _cyCanvas.parentNode.appendChild(_titlesContainer);
 
             if (!optArr || typeof optArr !== "object") {
-                optArr = []
+                optArr = [];
             }
 
             var params = [];
@@ -169,24 +178,26 @@
         });
     };
 
-    // noinspection JSUnresolvedVariable
+    // noinspection JSUnresolvedVariable, JSLint
     if (typeof module !== 'undefined' && module.exports) { // expose as a commonjs module
-        // noinspection JSUnresolvedVariable, SpellCheckingInspection
+        // noinspection JSUnresolvedVariable, SpellCheckingInspection, JSLint
         module.exports = function (cytoscape) {
             register(cytoscape);
         };
     } else {
-        // noinspection JSUnresolvedVariable
+        // noinspection JSUnresolvedVariable, JSLint
         if (typeof define !== 'undefined' && define.amd) { // expose as an amd/requirejs module
-            // noinspection JSUnresolvedFunction
+            // noinspection JSUnresolvedFunction, JSLint
             define('cytoscape-nodeHtmlLabel', function () {
                 return register;
             });
         }
     }
 
+    // noinspection JSLint
     if (typeof cytoscape !== 'undefined') { // expose to global cytoscape (i.e. window.cytoscape)
+        // noinspection JSLint
         register(cytoscape);
     }
 
-})();
+}());
