@@ -1,0 +1,154 @@
+<!DOCTYPE>
+
+<html>
+
+<head>
+    <title>cytoscape-node-html-label.js demo</title>
+
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+    <script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
+
+    <!-- for testing with local version of cytoscape.js -->
+    <!--<script src="../cytoscape.js/build/cytoscape.js"></script>-->
+
+    <script src="cytoscape-node-html-label.js"></script>
+
+    <style>
+        body {
+            font-family: helvetica neue, helvetica, liberation sans, arial, sans-serif;
+            font-size: 14px;
+        }
+
+        #cy {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 999;
+        }
+
+        h1 {
+            opacity: 0.5;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        .cy-title {
+            text-align: center;
+        }
+
+        .cy-title_right {
+            text-align: right;
+        }
+
+        .cy-title__p1 {
+            color: #000;
+            font-size: 0.8em;
+        }
+
+        .cy-title__p2 {
+            color: #1bad14;
+            font-size: 1em;
+            text-shadow: 0 0 2px #000;
+        }
+
+        .cy-title_left {
+            text-align: left;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            var cy = window.cy = cytoscape({
+                container: document.getElementById('cy'),
+
+                layout: {
+                    name: 'grid',
+                    cols: 3
+                },
+
+                style: [
+                    {
+                        selector: 'node#a1', style: {'shape': 'triangle'}
+                    },
+                    {
+                        selector: 'node#a2', style: {'shape': 'pentagon'}
+                    },
+                    {
+                        selector: 'node#a3', style: {'shape': 'vee'}
+                    }
+                ],
+
+                elements: {
+                    nodes: [
+                        {data: {id: 'a1', name: 'a1'}, classes: 'l1'},
+                        {data: {id: 'a2', name: 'a2'}, classes: 'l1'},
+                        {data: {id: 'a3', name: 'a3'}, classes: 'l1'},
+
+                        {data: {id: 'b1', name: 'b1'}, classes: 'l2'},
+                        {data: {id: 'b2', name: 'b2'}, classes: 'l2'},
+                        {data: {id: 'b3', name: 'b3'}, classes: 'l2'},
+
+                        {data: {id: 'c1', name: 'c1'}, classes: 'l3'},
+                        {data: {id: 'c2', name: 'c2'}, classes: 'l3'},
+                        {data: {id: 'c3', name: 'c3'}, classes: 'l3'},
+
+                        {data: {id: 'd1', name: 'd1'}, classes: 'l4'},
+                        {data: {id: 'd2', name: 'd2'}, classes: 'l4'},
+                        {data: {id: 'd3', name: 'd3'}, classes: 'l4'}
+                    ]
+                }
+            });
+
+            // demo your core ext
+            cy.nodeHtmlLabels([
+                {
+                    query: '.l1',
+                    wrapCssClasses: 'cy-title',
+                    tpl: function (data) {
+                        return '<p class="cy-title__p1">' + data.id + '</p>' + '<p  class="cy-title__p2">' + data.name + '</p>';
+                    }
+                },
+                {
+                    query: '.l2',
+                    positionX: 'right',
+                    wrapCssClasses: 'cy-title cy-title_right',
+                    tpl: function (data) {
+                        return '<p class="cy-title__p1">asdv asd vare vasre vser vservserv ser ves esrv ser vsez r</p>' + '<p class="cy-title__p2">' + data.name + '</p>';
+                    }
+                },
+                {
+                    query: '.l3',
+                    positionY: 'bottom',
+                    positionX: 'left',
+                    wrapCssClasses: 'cy-title cy-title_left',
+                    tpl: function (data) {
+                        return '<p class="cy-title__p1">' + data.id + '</p>' + '<p  class="cy-title__p2">' + data.name + '</p>';
+                    }
+                },
+                {
+                    query: '.l4',
+                    positionY: 'bottom',
+                    positionX: 'center',
+                    wrapCssClasses: 'cy-title',
+                    tpl: function (data) {
+                        return '<p class="cy-title__p1">' + data.id + '</p>' + '<p class="cy-title__p2">' + data.name + '</p>';
+                    }
+                }
+            ]);
+
+        });
+    </script>
+</head>
+
+<body>
+<h1>cytoscape-node-html-label demo</h1>
+
+<div id="cy"></div>
+
+</body>
+
+</html>
