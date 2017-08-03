@@ -41,7 +41,7 @@
         };
     }
 
-    var ProtoParam = function (opt, cy) {
+    var ProtoParam = function (opt) {
         if (!opt || typeof opt !== "object") {
             opt = {};
         }
@@ -54,7 +54,6 @@
         this.tpl = opt.tpl || function (data) {
             return data + '';
         };
-        this.elems = this.getElems(cy);
 
         this.tFontSize = null;
         this.tWrapHeight = null;
@@ -114,13 +113,10 @@
     ProtoParam.prototype.setWrapHeight = function (val) {
         this.tWrapHeight = val;
     };
-    ProtoParam.prototype.getElems = function (cy) {
-        return cy.elements(this.query);
-    };
-    ProtoParam.prototype.getHtml = function () {
+    ProtoParam.prototype.getHtmlForElems = function (cy) {
         var html = '';
         var that = this;
-        this.elems.forEach(function (d) {
+        cy.elements(this.query).forEach(function (d) {
             if (d.isNode()) {
                 html += that.templateNode(d);
             }
@@ -154,7 +150,7 @@
 
             var params = [];
             optArr.forEach(function (opt) {
-                params.push(new ProtoParam(opt, _cy));
+                params.push(new ProtoParam(opt));
             });
 
             var handler = throttle(function () {
@@ -166,7 +162,7 @@
                 params.forEach(function (p) {
                     p.updateZoom(cZoom);
                     p.setWrapHeight(cHeight);
-                    html += p.getHtml();
+                    html += p.getHtmlForElems(_cy);
                 });
 
                 _titlesContainer.innerHTML = html;
