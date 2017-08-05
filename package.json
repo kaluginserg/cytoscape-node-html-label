@@ -25,10 +25,13 @@
   },
   "homepage": "https://github.com/kaluginserg/cytoscape-node-html-label",
   "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-bump": "^2.7.0",
+    "gulp-git": "^2.4.1",
+    "gulp-tag-version": "^1.3.0"
   },
   "peerDependencies": {
     "cytoscape": "^3.0.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
