@@ -131,7 +131,7 @@
             return;
         } // can't register if cytoscape unspecified
 
-        cytoscape('core', 'nodeHtmlLabels', function (optArr) {
+        cytoscape('core', 'nodeHtmlLabel', function (optArr) {
 
             var _cy = this;
             var _cyContainer = _cy.container();

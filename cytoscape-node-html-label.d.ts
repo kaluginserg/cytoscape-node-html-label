@@ -1,5 +1,5 @@
 export declare namespace cytoscape {
-    export interface CytoscapeNodeHtmlLabels {
+    export interface CytoscapeNodeHtmlLabel {
         query ?: string;
         width ?: number;
         positionY ?: string;
@@ -9,5 +9,5 @@ export declare namespace cytoscape {
         tpl ?: (d: any) => string;
     }
 
-    export function nodeHtmlLabels(o: CytoscapeNodeHtmlLabels[]): any;
+    export function nodeHtmlLabel(o: CytoscapeNodeHtmlLabel[]): any;
 }
