@@ -1,7 +1,10 @@
+"use strict";
 var gulp = require('gulp');
 var git = require('gulp-git');
 var bump = require('gulp-bump');
 var tag_version = require('gulp-tag-version');
+
+var Server = require('karma').Server;
 
 function inc(importance) {
   return gulp.src(['./package.json'])
@@ -19,4 +22,13 @@ gulp.task('feature', function () {
 });
 gulp.task('release', function () {
   return inc('major');
+});
+
+/**
+ * Run test once and exit
+ */
+gulp.task('test', function (done) {
+  new Server({
+    configFile: __dirname + '/karma.conf.js',
+  }, done).start();
 });

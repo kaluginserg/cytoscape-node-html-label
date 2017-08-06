@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "None",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "es2015",
+      "dom",
+      "ES2016"
+    ],
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "/"
+    ],
+    "files": [
+      "cytoscape-node-html-label.d.ts"
+    ],
+    "types": [
+      "cytoscape-node-html-label.d.ts"
+    ]
+  }
+}

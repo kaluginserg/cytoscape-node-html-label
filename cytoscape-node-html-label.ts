@@ -12,10 +12,27 @@
 // todo 7. Добавить метод remove() - которые будет сбрасывать все настройки плагина.
 // todo 8. Сделать размер шрифта - независимым от font-size, что бы все срабатывало автоматом через transform2d
 // todo 9. Доработать readme - добавить раздел "Возможности".
+
+interface CytoscapeNodeHtmlParams {
+  query ?: string;
+  width ?: number;
+  positionY ?: string;
+  positionX ?: string;
+  wrapCssClasses ?: string;
+  fontSizeBase ?: number;
+  tpl ?: (d: any) => string;
+}
+
+declare const require: any;
+declare const module: any;
+declare const define: any;
+declare const cytoscape: any;
+
 (function () {
-  var CSS_CLASS_WRAP = 'cy-node-html-' + (+new Date());
-  var CSS_CLASS_ELEMENT = CSS_CLASS_WRAP + '__e';
-  var ProtoParam = function (opt) {
+  const CSS_CLASS_WRAP = 'cy-node-html-' + (+new Date());
+  const CSS_CLASS_ELEMENT = CSS_CLASS_WRAP + '__e';
+
+  let ProtoParam = function (opt: CytoscapeNodeHtmlParams) {
     if (!opt || typeof opt !== "object") {
       opt = {};
     }
@@ -25,19 +42,21 @@
     this.positionX = opt.positionX || 'center'; // 'center'|'left'|'right'
     this.wrapCssClasses = opt.wrapCssClasses || '';
     this.fontSizeBase = opt.fontSizeBase || 10;
-    this.tpl = opt.tpl || function (data) {
+    this.tpl = opt.tpl || function (data: any) {
       return data + '';
     };
+
     this.tFontSize = null;
     this.tWrapHeight = null;
     this.tZoom = null;
     this.tZoomedWidth = null;
   };
-  ProtoParam.prototype.templateNode = function (cyElem) {
-    var bounds = cyElem.renderedBoundingBox({includeEdges: false, includeLabels: false});
-    var positions = [];
-    var diffY = ((bounds.y2 - bounds.y1) - cyElem.numericStyle('height') * this.tZoom) / 2 || 0;
-    var diffX = ((bounds.x2 - bounds.x1) - cyElem.numericStyle('width') * this.tZoom) / 2 || 0;
+  ProtoParam.prototype.templateNode = function (cyElem: any) {
+    let bounds = cyElem.renderedBoundingBox({includeEdges: false, includeLabels: false});
+    let positions = [];
+    let diffY = ((bounds.y2 - bounds.y1) - cyElem.numericStyle('height') * this.tZoom) / 2 || 0;
+    let diffX = ((bounds.x2 - bounds.x1) - cyElem.numericStyle('width') * this.tZoom) / 2 || 0;
+
     switch (this.positionY) {
       case 'top':
       case 'center':
@@ -60,34 +79,35 @@
       case 'right':
         positions.push('left: ' + (bounds.x2 - this.tZoomedWidth - diffX) + 'px');
         break;
-      default:
+      default :
         console.error('wrong positionX property!');
         positions.push('left: 0');
     }
-    var innerTpl = '';
+
+    let innerTpl = '';
     try {
       innerTpl = this.tpl(cyElem.data());
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
     }
+
     return '<div class="' + this.wrapCssClasses + ' ' + CSS_CLASS_ELEMENT + '" style="' + positions.join('; ')
-      + ';width:' + this.tZoomedWidth + 'px;font-size:' + this.tFontSize + 'px;">'
-      + innerTpl
-      + '</div>';
+        + ';width:' + this.tZoomedWidth + 'px;font-size:' + this.tFontSize + 'px;">'
+        + innerTpl
+        + '</div>';
   };
-  ProtoParam.prototype.updateZoom = function (val) {
+  ProtoParam.prototype.updateZoom = function (val: number) {
     this.tZoom = val;
     this.tFontSize = val * this.fontSizeBase;
     this.tZoomedWidth = this.width * val;
   };
-  ProtoParam.prototype.setWrapHeight = function (val) {
+  ProtoParam.prototype.setWrapHeight = function (val: number) {
     this.tWrapHeight = val;
   };
-  ProtoParam.prototype.getHtmlForElems = function (cy) {
-    var html = '';
-    var that = this;
-    cy.elements(this.query).forEach(function (d) {
+  ProtoParam.prototype.getHtmlForElems = function (cy: any) {
+    let html = '';
+    let that = this;
+    cy.elements(this.query).forEach(function (d: any) {
       if (d.isNode()) {
         html += that.templateNode(d);
       }
@@ -96,65 +116,79 @@
   };
 
   function addCssToDocument() {
-    var stylesWrap = 'overflow:hidden;z-index:10;pointer-events:none;position:relative;margin:0;padding:0;border:0';
-    var stylesElem = 'position:absolute';
+    let stylesWrap = 'overflow:hidden;z-index:10;pointer-events:none;position:relative;margin:0;padding:0;border:0';
+    let stylesElem = 'position:absolute';
     document.querySelector('head').innerHTML +=
-      "<style>." + CSS_CLASS_WRAP + "{" + stylesWrap + "} ." + CSS_CLASS_ELEMENT + "{" + stylesElem + "}</style>";
+        `<style>.${CSS_CLASS_WRAP}{${stylesWrap}} .${CSS_CLASS_ELEMENT}{${stylesElem}}</style>`;
   }
 
-  function nodeHtmlLabel(_cy, optArr) {
-    var _cyContainer = _cy.container();
-    var _titlesContainer = document.createElement('div');
+  function nodeHtmlLabel(_cy: any, optArr: CytoscapeNodeHtmlParams[]) {
+
+    let _cyContainer = _cy.container();
+    let _titlesContainer = document.createElement('div');
     _titlesContainer.className = CSS_CLASS_WRAP;
-    var _cyCanvas = _cyContainer.querySelector('canvas');
+
+    let _cyCanvas = _cyContainer.querySelector('canvas');
     _cyCanvas.parentNode.appendChild(_titlesContainer);
+
     addCssToDocument();
+
     if (!optArr || typeof optArr !== "object") {
       optArr = [];
     }
-    var params = [];
+
+    let params = <any[]>[];
     optArr.forEach(function (opt) {
       params.push(new ProtoParam(opt));
     });
-    var handler = function () {
-      var cHeight = _cyCanvas.offsetHeight;
-      var cZoom = _cy.zoom();
+
+    let handler = function () {
+      let cHeight = _cyCanvas.offsetHeight;
+      let cZoom = _cy.zoom();
       _titlesContainer.style.height = cHeight + 'px';
-      var html = '';
+
+      let html = '';
       params.forEach(function (p) {
         p.updateZoom(cZoom);
         p.setWrapHeight(cHeight);
         html += p.getHtmlForElems(_cy);
       });
+
       _titlesContainer.innerHTML = html;
     };
+
     _cy.on('render', handler);
+
     return _cy;
   }
 
+
   // registers the extension on a cytoscape lib ref
-  var register = function (cy) {
+  let register = function (cy: any) {
+
     if (!cy) {
       return;
     } // can't register if cytoscape unspecified
-    cy('core', 'nodeHtmlLabel', function (optArr) {
+
+    cy('core', 'nodeHtmlLabel', function (optArr: any) {
       return nodeHtmlLabel(this, optArr);
     });
   };
-  if (typeof module !== 'undefined' && module.exports) {
-    module.exports = function (cy) {
+
+  if (typeof module !== 'undefined' && module.exports) { // expose as a commonjs module
+    module.exports = function (cy: any) {
       register(cy);
     };
-  }
-  else {
-    if (typeof define !== 'undefined' && define.amd) {
+  } else {
+    if (typeof define !== 'undefined' && define.amd) { // expose as an amd/requirejs module
       define('cytoscape-nodeHtmlLabel', function () {
         return register;
       });
     }
   }
-  if (typeof cytoscape !== 'undefined') {
+
+  if (typeof cytoscape !== 'undefined') { // expose to global cytoscape (i.e. window.cytoscape)
     register(cytoscape);
   }
+
 }());
-//# sourceMappingURL=cytoscape-node-html-label.js.map
