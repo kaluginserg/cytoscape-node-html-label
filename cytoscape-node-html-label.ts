@@ -13,6 +13,15 @@
 // todo 8. Сделать размер шрифта - независимым от font-size, что бы все срабатывало автоматом через transform2d
 // todo 9. Доработать readme - добавить раздел "Возможности".
 
+
+// cy.zoom() - текущий зум
+// $el.style.width = cy.width() * cy.zoom()
+// $el.style.height = cy.height() *cy.zoom()
+
+// cy.pan() - позиция начала координат!
+// $el.style.top = cp.y
+// $el.style.left = cp.x
+
 interface CytoscapeNodeHtmlParams {
   query ?: string;
   width ?: number;
@@ -28,92 +37,113 @@ declare const module: any;
 declare const define: any;
 declare const cytoscape: any;
 
+
 (function () {
   const CSS_CLASS_WRAP = 'cy-node-html-' + (+new Date());
   const CSS_CLASS_ELEMENT = CSS_CLASS_WRAP + '__e';
 
-  let ProtoParam = function (opt: CytoscapeNodeHtmlParams) {
-    if (!opt || typeof opt !== "object") {
-      opt = {};
-    }
-    this.query = opt.query || 'node';
-    this.width = opt.width || 100; // integer number
-    this.positionY = opt.positionY || 'top'; // 'top'|'bottom'
-    this.positionX = opt.positionX || 'center'; // 'center'|'left'|'right'
-    this.wrapCssClasses = opt.wrapCssClasses || '';
-    this.fontSizeBase = opt.fontSizeBase || 10;
-    this.tpl = opt.tpl || function (data: any) {
-      return data + '';
-    };
+  class ProtoParam {
+    query: string;
+    width: number;
+    positionY: string;
+    positionX: string;
+    wrapCssClasses: string;
+    fontSizeBase: number;
+    tpl: (data: any) => string;
+    tFontSize: number;
+    tWrapHeight: number;
+    tZoom: number;
+    tZoomedWidth: number;
 
-    this.tFontSize = null;
-    this.tWrapHeight = null;
-    this.tZoom = null;
-    this.tZoomedWidth = null;
-  };
-  ProtoParam.prototype.templateNode = function (cyElem: any) {
-    let bounds = cyElem.renderedBoundingBox({includeEdges: false, includeLabels: false});
-    let positions = [];
-    let diffY = ((bounds.y2 - bounds.y1) - cyElem.numericStyle('height') * this.tZoom) / 2 || 0;
-    let diffX = ((bounds.x2 - bounds.x1) - cyElem.numericStyle('width') * this.tZoom) / 2 || 0;
-
-    switch (this.positionY) {
-      case 'top':
-      case 'center':
-        positions.push('bottom: ' + (this.tWrapHeight - bounds.y1 - diffY) + 'px');
-        break;
-      case 'bottom':
-        positions.push('top: ' + (bounds.y2 - diffY) + 'px');
-        break;
-      default:
-        console.error('wrong positionY property!');
-        positions.push('top: 0');
-    }
-    switch (this.positionX) {
-      case 'center':
-        positions.push('left: ' + ((bounds.x1 + bounds.x2 - this.tZoomedWidth) / 2) + 'px');
-        break;
-      case 'left':
-        positions.push('left: ' + (bounds.x1 + diffX) + 'px');
-        break;
-      case 'right':
-        positions.push('left: ' + (bounds.x2 - this.tZoomedWidth - diffX) + 'px');
-        break;
-      default :
-        console.error('wrong positionX property!');
-        positions.push('left: 0');
-    }
-
-    let innerTpl = '';
-    try {
-      innerTpl = this.tpl(cyElem.data());
-    } catch (err) {
-      console.error(err);
-    }
-
-    return '<div class="' + this.wrapCssClasses + ' ' + CSS_CLASS_ELEMENT + '" style="' + positions.join('; ')
-        + ';width:' + this.tZoomedWidth + 'px;font-size:' + this.tFontSize + 'px;">'
-        + innerTpl
-        + '</div>';
-  };
-  ProtoParam.prototype.updateZoom = function (val: number) {
-    this.tZoom = val;
-    this.tFontSize = val * this.fontSizeBase;
-    this.tZoomedWidth = this.width * val;
-  };
-  ProtoParam.prototype.setWrapHeight = function (val: number) {
-    this.tWrapHeight = val;
-  };
-  ProtoParam.prototype.getHtmlForElems = function (cy: any) {
-    let html = '';
-    let that = this;
-    cy.elements(this.query).forEach(function (d: any) {
-      if (d.isNode()) {
-        html += that.templateNode(d);
+    constructor(opt: CytoscapeNodeHtmlParams) {
+      if (!opt || typeof opt !== "object") {
+        opt = {};
       }
-    });
-    return html;
-  };
+      this.query = opt.query || 'node';
+      this.width = opt.width || 100; // integer number
+      this.positionY = opt.positionY || 'top'; // 'top'|'bottom'
+      this.positionX = opt.positionX || 'center'; // 'center'|'left'|'right'
+      this.wrapCssClasses = opt.wrapCssClasses || '';
+      this.fontSizeBase = opt.fontSizeBase || 10;
+      this.tpl = opt.tpl || function (data: any) {
+        return data + '';
+      };
+
+      this.tFontSize = null;
+      this.tWrapHeight = null;
+      this.tZoom = null;
+      this.tZoomedWidth = null;
+
+    }
+
+    templateNode(cyElem: any) {
+      let bounds = cyElem.renderedBoundingBox({includeEdges: false, includeLabels: false});
+      let positions = [];
+      let diffY = ((bounds.y2 - bounds.y1) - cyElem.numericStyle('height') * this.tZoom) / 2 || 0;
+      let diffX = ((bounds.x2 - bounds.x1) - cyElem.numericStyle('width') * this.tZoom) / 2 || 0;
+
+      switch (this.positionY) {
+        case 'top':
+        case 'center':
+          positions.push('bottom: ' + (this.tWrapHeight - bounds.y1 - diffY) + 'px');
+          break;
+        case 'bottom':
+          positions.push('top: ' + (bounds.y2 - diffY) + 'px');
+          break;
+        default:
+          console.error('wrong positionY property!');
+          positions.push('top: 0');
+      }
+      switch (this.positionX) {
+        case 'center':
+          positions.push('left: ' + ((bounds.x1 + bounds.x2 - this.tZoomedWidth) / 2) + 'px');
+          break;
+        case 'left':
+          positions.push('left: ' + (bounds.x1 + diffX) + 'px');
+          break;
+        case 'right':
+          positions.push('left: ' + (bounds.x2 - this.tZoomedWidth - diffX) + 'px');
+          break;
+        default :
+          console.error('wrong positionX property!');
+          positions.push('left: 0');
+      }
+
+      let innerTpl = '';
+      try {
+        innerTpl = this.tpl(cyElem.data());
+      } catch (err) {
+        console.error(err);
+      }
+
+      return '';
+      // return '<div class="' + this.wrapCssClasses + ' ' + CSS_CLASS_ELEMENT + '" style="' + positions.join('; ')
+      //     + ';width:' + this.tZoomedWidth + 'px;font-size:' + this.tFontSize + 'px;">'
+      //     + innerTpl
+      //     + '</div>';
+    }
+
+    updateZoom(val: number) {
+      this.tZoom = val;
+      this.tFontSize = val * this.fontSizeBase;
+      this.tZoomedWidth = this.width * val;
+    }
+
+    setWrapHeight(val: number) {
+      this.tWrapHeight = val;
+    }
+
+    getHtmlForElems(cy: any) {
+      let html = '';
+      let that = this;
+      cy.elements(this.query).forEach(function (d: any) {
+        if (d.isNode()) {
+          html += that.templateNode(d);
+        }
+      });
+      return html;
+    }
+  }
 
   function addCssToDocument() {
     let stylesWrap = 'overflow:hidden;z-index:10;pointer-events:none;position:relative;margin:0;padding:0;border:0';
@@ -137,7 +167,7 @@ declare const cytoscape: any;
       optArr = [];
     }
 
-    let params = <any[]>[];
+    let params = <ProtoParam[]>[];
     optArr.forEach(function (opt) {
       params.push(new ProtoParam(opt));
     });
@@ -145,7 +175,7 @@ declare const cytoscape: any;
     let handler = function () {
       let cHeight = _cyCanvas.offsetHeight;
       let cZoom = _cy.zoom();
-      _titlesContainer.style.height = cHeight + 'px';
+      // _titlesContainer.style.height = cHeight + 'px';
 
       let html = '';
       params.forEach(function (p) {
