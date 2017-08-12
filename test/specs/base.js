@@ -72,10 +72,10 @@ describe('base', function () {
   it('nodeHtmlLabel can reinit', function () {
     cyInitPlugin();
     cyUpdateElements();
-
-    cy.on('render', function () {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100;
+    setTimeout(function () {
       expect(getWrapDiv().childNodes.length).toEqual(2);
       isMainDefinedTest();
-    });
+    }, 50)
   });
 });

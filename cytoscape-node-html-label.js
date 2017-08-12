@@ -1,149 +1,308 @@
-// todo 1. Сделать адекватное реагирование на разные события (изменение данных \ рендер). С минимумом манипуляций с DOM!
-// todo 2. Сделать позиционирование лэйблов (vertical-align: 'to-bottom | to-top') // default - to-bottom
-// todo 2.1. сделать translate позиционирование для всего кадра - что бы очень быстро отрисовывать для частых операций pan и zoom
-// todo 2.2. нужно  позиционирование относительно границ ноды. Сделать как сейчас в cytoscape. 'top left' или 'center center'
-// todo 2.3. сделать translateX translateY (top center left right bottom) 0%, -50%, -100%.
-// todo 2.4. все позиционирование сделать на transform2d css !!
-// complete 3. динамически добавлять стили для заголовков в dom (class="Name"), что бы не засорять инлайн стилями. insertRule.
-// complete 4. добавить комплексный тест на инициализацию в дом и отрисовку одной ноды, и ее перерисовку.
-// todo 5. Доработать демо - сделать понятные подписи, для всех вариантов выравнивания.
-// todo 6. Доработать Readme - добавить блок по браузерной поддержке, и блок - инструкцию для тех кто присоединится к доработке +
-// блок по ограничениям техническим количество нод.
-// todo 7. Добавить метод remove() - которые будет сбрасывать все настройки плагина.
-// todo 8. Сделать размер шрифта - независимым от font-size, что бы все срабатывало автоматом через transform2d
-// todo 9. Доработать readme - добавить раздел "Возможности".
 (function () {
-  var CSS_CLASS_WRAP = 'cy-node-html-' + (+new Date());
-  var CSS_CLASS_ELEMENT = CSS_CLASS_WRAP + '__e';
-  var ProtoParam = (function () {
-    function ProtoParam(opt) {
-      if (!opt || typeof opt !== "object") {
-        opt = {};
+  "use strict";
+  var $$find = function (arr, predicate) {
+    if (typeof predicate !== 'function') {
+      throw new TypeError('predicate must be a function');
+    }
+    var length = arr.length >>> 0;
+    var thisArg = arguments[1];
+    var value;
+    for (var i = 0; i < length; i++) {
+      value = arr[i];
+      if (predicate.call(thisArg, value, i, arr)) {
+        return value;
       }
-      this.query = opt.query || 'node';
-      this.width = opt.width || 100; // integer number
-      this.positionY = opt.positionY || 'top'; // 'top'|'bottom'
-      this.positionX = opt.positionX || 'center'; // 'center'|'left'|'right'
-      this.wrapCssClasses = opt.wrapCssClasses || '';
-      this.fontSizeBase = opt.fontSizeBase || 10;
-      this.tpl = opt.tpl || function (data) {
-        return data + '';
+    }
+    return undefined;
+  };
+  var $$assign = function (target) {
+    'use strict';
+    var arg = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+      arg[_i - 1] = arguments[_i];
+    }
+    if (target === undefined || target === null) {
+      throw new TypeError('Cannot convert first argument to object');
+    }
+    var to = Object(target);
+    for (var i = 1; i < arguments.length; i++) {
+      var nextSource = arguments[i];
+      if (nextSource === undefined || nextSource === null) {
+        continue;
+      }
+      var keysArray = Object.keys(Object(nextSource));
+      for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
+        var nextKey = keysArray[nextIndex];
+        var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
+        if (desc !== undefined && desc.enumerable) {
+          to[nextKey] = nextSource[nextKey];
+        }
+      }
+    }
+    return to;
+  };
+  var LabelElement = (function () {
+    function LabelElement(_a) {
+      var node = _a.node, id = _a.id, baseClassName = _a.baseClassName, _b = _a.tpl, tpl = _b === void 0 ? function () {
+          return "";
+        } : _b, _c = _a.cssClass, cssClass = _c === void 0 ? null : _c, _d = _a.position,
+        position = _d === void 0 ? null : _d, _e = _a.data, data = _e === void 0 ? null : _e, _f = _a.halign,
+        halign = _f === void 0 ? "center" : _f, _g = _a.valign, valign = _g === void 0 ? "center" : _g,
+        _h = _a.halignBox, halignBox = _h === void 0 ? "center" : _h, _j = _a.valignBox,
+        valignBox = _j === void 0 ? "center" : _j;
+      var _align = {
+        "top": -.5,
+        "left": -.5,
+        "center": 0,
+        "right": .5,
+        "bottom": .5
       };
-      this.tFontSize = null;
-      this.tWrapHeight = null;
-      this.tZoom = null;
-      this.tZoomedWidth = null;
+      var _alignBox = {
+        "top": -100,
+        "left": -100,
+        "center": -50,
+        "right": 0,
+        "bottom": 0
+      };
+      this._align = [_align[halign], _align[valign], _alignBox[halignBox], _alignBox[valignBox]];
+      this._node = node;
+      this.id = id;
+      this._baseElementClassName = baseClassName;
+      this.cssClass = cssClass;
+      this.tpl = tpl;
+      this.init();
+      if (data) {
+        this.updateData(data);
+      }
+      if (position) {
+        this.updatePosition(position);
+      }
     }
 
-    ProtoParam.prototype.templateNode = function (cyElem) {
-      var bounds = cyElem.renderedBoundingBox({includeEdges: false, includeLabels: false});
-      var positions = [];
-      var diffY = ((bounds.y2 - bounds.y1) - cyElem.numericStyle('height') * this.tZoom) / 2 || 0;
-      var diffX = ((bounds.x2 - bounds.x1) - cyElem.numericStyle('width') * this.tZoom) / 2 || 0;
-      switch (this.positionY) {
-        case 'top':
-        case 'center':
-          positions.push('bottom: ' + (this.tWrapHeight - bounds.y1 - diffY) + 'px');
-          break;
-        case 'bottom':
-          positions.push('top: ' + (bounds.y2 - diffY) + 'px');
-          break;
-        default:
-          console.error('wrong positionY property!');
-          positions.push('top: 0');
-      }
-      switch (this.positionX) {
-        case 'center':
-          positions.push('left: ' + ((bounds.x1 + bounds.x2 - this.tZoomedWidth) / 2) + 'px');
-          break;
-        case 'left':
-          positions.push('left: ' + (bounds.x1 + diffX) + 'px');
-          break;
-        case 'right':
-          positions.push('left: ' + (bounds.x2 - this.tZoomedWidth - diffX) + 'px');
-          break;
-        default:
-          console.error('wrong positionX property!');
-          positions.push('left: 0');
-      }
-      var innerTpl = '';
+    LabelElement.prototype.updateData = function (data) {
       try {
-        innerTpl = this.tpl(cyElem.data());
+        this._node.innerHTML = this.tpl(data);
       }
       catch (err) {
         console.error(err);
       }
-      return '';
-      // return '<div class="' + this.wrapCssClasses + ' ' + CSS_CLASS_ELEMENT + '" style="' + positions.join('; ')
-      //     + ';width:' + this.tZoomedWidth + 'px;font-size:' + this.tFontSize + 'px;">'
-      //     + innerTpl
-      //     + '</div>';
     };
-    ProtoParam.prototype.updateZoom = function (val) {
-      this.tZoom = val;
-      this.tFontSize = val * this.fontSizeBase;
-      this.tZoomedWidth = this.width * val;
+    LabelElement.prototype.getNode = function () {
+      return this._node;
     };
-    ProtoParam.prototype.setWrapHeight = function (val) {
-      this.tWrapHeight = val;
+    LabelElement.prototype.updatePosition = function (pos) {
+      this._renderPosition(pos);
     };
-    ProtoParam.prototype.getHtmlForElems = function (cy) {
-      var html = '';
-      var that = this;
-      cy.elements(this.query).forEach(function (d) {
-        if (d.isNode()) {
-          html += that.templateNode(d);
+    LabelElement.prototype.init = function () {
+      this._node.setAttribute("id", this.id);
+      this._node.setAttribute("class", this._baseElementClassName);
+      if (this.cssClass && this.cssClass.length) {
+        this._node.classList.add(this.cssClass);
+      }
+    };
+    LabelElement.prototype._renderPosition = function (position) {
+      var prev = this._position;
+      var x = position.x + this._align[0] * position.w;
+      var y = position.y + this._align[1] * position.h;
+      if (!prev || prev[0] !== x || prev[1] !== y) {
+        this._position = [x, y];
+        var valRel = "translate(" + this._align[2] + "%," + this._align[3] + "%) ";
+        var valAbs = "translate(" + x.toFixed(2) + "px," + y.toFixed(2) + "px) ";
+        var val = valRel + valAbs;
+        var stl = this._node.style;
+        stl.webkitTransform = val;
+        stl.msTransform = val;
+        stl.transform = val;
+      }
+    };
+    return LabelElement;
+  }());
+  var LabelContainer = (function () {
+    function LabelContainer(node) {
+      this._node = node;
+      this._cssWrap = 'cy-node-html-' + (+new Date());
+      this._cssElem = this._cssWrap + '__e';
+      this.addCssToDocument();
+      this._node.className = this._cssWrap;
+      this._elements = [];
+    }
+
+    LabelContainer.prototype.addElem = function (id, param, payload) {
+      if (payload === void 0) {
+        payload = {};
+      }
+      var nodeElem = document.createElement('div');
+      this._node.appendChild(nodeElem);
+      var newElem = new LabelElement($$assign({}, param, {
+        node: nodeElem,
+        id: id,
+        baseClassName: this._cssElem,
+        data: payload.data,
+        position: payload.position
+      }));
+      this._elements.push(newElem);
+    };
+    LabelContainer.prototype.removeElemById = function (id) {
+      for (var j = this._elements.length - 1; j >= 0; j--) {
+        if (this._elements[j].id === id) {
+          console.log(j);
+          this._node.removeChild(this._elements.splice(j, 1)[0].getNode());
+          break;
         }
-      });
-      return html;
+      }
     };
-    return ProtoParam;
+    LabelContainer.prototype.updateElemPosition = function (data) {
+      var ele = this.getElemById(data.id);
+      if (ele) {
+        ele.updatePosition(data.position);
+      }
+    };
+    LabelContainer.prototype.getElemById = function (id) {
+      return $$find(this._elements, function (x) {
+        return x.id === id;
+      });
+    };
+    LabelContainer.prototype.updatePanZoom = function (_a) {
+      var pan = _a.pan, zoom = _a.zoom;
+      var val = "translate(" + pan.x + "px," + pan.y + "px) scale(" + zoom + ")";
+      var stl = this._node.style;
+      var origin = 'top left';
+      stl.webkitTransform = val;
+      stl.msTransform = val;
+      stl.transform = val;
+      stl.webkitTransformOrigin = origin;
+      stl.msTransformOrigin = origin;
+      stl.transformOrigin = origin;
+    };
+    LabelContainer.prototype.addCssToDocument = function () {
+      var stylesWrap = 'position:absolute;z-index:10;width:500px;pointer-events:none;margin:0;padding:0;border:0;outline:0';
+      var stylesElem = 'position:absolute';
+      document.querySelector('head').innerHTML +=
+        "<style>." + this._cssWrap + "{" + stylesWrap + "} ." + this._cssElem + "{" + stylesElem + "}</style>";
+    };
+    return LabelContainer;
   }());
 
-  function addCssToDocument() {
-    var stylesWrap = 'overflow:hidden;z-index:10;pointer-events:none;position:relative;margin:0;padding:0;border:0';
-    var stylesElem = 'position:absolute';
-    document.querySelector('head').innerHTML +=
-      "<style>." + CSS_CLASS_WRAP + "{" + stylesWrap + "} ." + CSS_CLASS_ELEMENT + "{" + stylesElem + "}</style>";
-  }
-
-  function nodeHtmlLabel(_cy, optArr) {
-    var _cyContainer = _cy.container();
-    var _titlesContainer = document.createElement('div');
-    _titlesContainer.className = CSS_CLASS_WRAP;
-    var _cyCanvas = _cyContainer.querySelector('canvas');
-    _cyCanvas.parentNode.appendChild(_titlesContainer);
-    addCssToDocument();
-    if (!optArr || typeof optArr !== "object") {
-      optArr = [];
-    }
-    var params = [];
-    optArr.forEach(function (opt) {
-      params.push(new ProtoParam(opt));
+  function cyNodeHtmlLabel(_cy, params) {
+    console.log('cyNodeHtmlLabel');
+    var _params = (!params || typeof params !== "object") ? [] : params;
+    var _lc = createLabelContainer();
+    _cy.one('render', function (e) {
+      createNodesCyHandler(e);
+      wrapCyHandler(e);
     });
-    var handler = function () {
-      var cHeight = _cyCanvas.offsetHeight;
-      var cZoom = _cy.zoom();
-      // _titlesContainer.style.height = cHeight + 'px';
-      var html = '';
-      params.forEach(function (p) {
-        p.updateZoom(cZoom);
-        p.setWrapHeight(cHeight);
-        html += p.getHtmlForElems(_cy);
-      });
-      _titlesContainer.innerHTML = html;
-    };
-    _cy.on('render', handler);
+    _cy.on('add', addCyHandler);
+    _cy.on('layoutstop', layoutstopHandler);
+    _cy.on('remove', removeCyHandler);
+    _cy.on('data', updateDataCyHandler);
+    _cy.on('pan zoom', wrapCyHandler);
+    _cy.on('drag', moveCyHandler);
     return _cy;
+
+    function createLabelContainer() {
+      var _cyContainer = _cy.container();
+      var _titlesContainer = document.createElement('div');
+      var _cyCanvas = _cyContainer.querySelector('canvas');
+      var cur = _cyContainer.querySelector('[class^="cy-node-html"]');
+      if (cur) {
+        _cyCanvas.parentNode.removeChild(cur);
+      }
+      _cyCanvas.parentNode.appendChild(_titlesContainer);
+      return new LabelContainer(_titlesContainer);
+    }
+
+    function createNodesCyHandler(_a) {
+      var cy = _a.cy;
+      _params.forEach(function (x) {
+        cy.elements(x.query).forEach(function (d) {
+          if (d.isNode()) {
+            _lc.addElem(d.id(), x, {
+              position: getNodePosition(d),
+              data: d.data()
+            });
+          }
+        });
+      });
+    }
+
+    function addCyHandler(ev) {
+      var target = ev.target;
+      var param = $$find(_params, function (x) {
+        return target.is(x.query);
+      });
+      if (param) {
+        _lc.addElem(target.id(), param, {
+          position: getNodePosition(target),
+          data: target.data()
+        });
+      }
+    }
+
+    function layoutstopHandler(_a) {
+      var cy = _a.cy;
+      _params.forEach(function (x) {
+        cy.elements(x.query).forEach(function (d) {
+          if (d.isNode()) {
+            _lc.updateElemPosition({
+              id: d.id(),
+              position: getNodePosition(d)
+            });
+          }
+        });
+      });
+    }
+
+    function removeCyHandler(ev) {
+      var target = ev.target;
+      var param = $$find(_params, function (x) {
+        return target.is(x.query);
+      });
+      if (param) {
+        _lc.removeElemById(target.id());
+      }
+    }
+
+    function moveCyHandler(ev) {
+      var target = ev.target;
+      var param = $$find(_params, function (x) {
+        return target.is(x.query);
+      });
+      if (param) {
+        _lc.updateElemPosition({
+          id: target.id(),
+          position: getNodePosition(target)
+        });
+      }
+    }
+
+    function updateDataCyHandler(ev) {
+      console.log('do update data', ev);
+    }
+
+    function wrapCyHandler(_a) {
+      var cy = _a.cy;
+      _lc.updatePanZoom({
+        pan: cy.pan(),
+        zoom: cy.zoom()
+      });
+    }
+
+    function getNodePosition(node) {
+      return {
+        w: node.width(),
+        h: node.height(),
+        x: node.position('x'),
+        y: node.position('y')
+      };
+    }
   }
 
-  // registers the extension on a cytoscape lib ref
   var register = function (cy) {
     if (!cy) {
       return;
-    } // can't register if cytoscape unspecified
+    }
     cy('core', 'nodeHtmlLabel', function (optArr) {
-      return nodeHtmlLabel(this, optArr);
+      return cyNodeHtmlLabel(this, optArr);
     });
   };
   if (typeof module !== 'undefined' && module.exports) {
