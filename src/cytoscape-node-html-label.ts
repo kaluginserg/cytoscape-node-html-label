@@ -194,8 +194,10 @@ declare const cytoscape: any;
     }
 
     removeElemById(id: string) {
-      this._node.removeChild(this._elements[id].getNode());
-      delete this._elements[id];
+        if (this._elements[id]) {
+            this._node.removeChild(this._elements[id].getNode());
+            delete this._elements[id];
+        }
     }
 
     updateElemPosition(id: string, position?: ICytoscapeNodeHtmlPosition) {
