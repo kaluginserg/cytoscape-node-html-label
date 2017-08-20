@@ -4,8 +4,8 @@ cytoscape-node-html-label
 
 ## Description
 
-labels for cytoscape nodes
-
+add html labels for cytoscape nodes.
+Demo: https://kaluginserg.github.io/cytoscape-node-html-label/
 
 ## Dependencies
 
@@ -51,12 +51,12 @@ nodeHtmlLabel parameter is an array of options:
 cy.nodeHtmlLabel(
 [
     {
-        query: 'node', // cy query
-        width: 100, // title width
-        positionY: 'top', // title vertical position. Can be 'top' or 'bottom'
-        positionX: 'center',  // title vertical position. Can be 'top' or 'bottom'
-        wrapCssClasses: 'some-classes', // any classes will be as attribute of <div> container for every title
-        fontSizeBase: 10,  // font-size for zoom == 1. If you want customize font-size in template - use 'em' units in css.
+        query: 'node', // cytoscape query selector
+        halign: 'center', // title vertical position. Can be 'left',''center, 'right'
+        valign: 'center', // title vertical position. Can be 'top',''center, 'bottom'
+        halignBox: 'center', // title vertical position. Can be 'left',''center, 'right'
+        valignBox: 'center', // title relative box vertical position. Can be 'top',''center, 'bottom'
+        cssClass: '', // any classes will be as attribute of <div> container for every title
         tpl: function(data){return data +''} // your html template here
     }
 ]

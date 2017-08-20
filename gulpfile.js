@@ -1,7 +1,15 @@
+"use strict";
 var gulp = require('gulp');
 var git = require('gulp-git');
 var bump = require('gulp-bump');
 var tag_version = require('gulp-tag-version');
+var rename = require('gulp-rename');
+
+var uglify = require('gulp-uglify');
+var ts = require("gulp-typescript");
+var tsProject = ts.createProject("tsconfig.json");
+
+var Server = require('karma').Server;
 
 function inc(importance) {
   return gulp.src(['./package.json'])
@@ -19,4 +27,27 @@ gulp.task('feature', function () {
 });
 gulp.task('release', function () {
   return inc('major');
+});
+
+/**
+ * Run test once and exit
+ */
+gulp.task('test', function (done) {
+  new Server({
+    configFile: __dirname + '/karma.conf.js',
+  }, done).start();
+});
+
+gulp.task('ts', function () {
+  return tsProject.src()
+    .pipe(tsProject())
+    .js
+    .pipe(gulp.dest("dist"));
+});
+
+gulp.task('min', function () {
+  return gulp.src(['dist/cytoscape-node-html-label.js'])
+    .pipe(uglify())
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulp.dest('dist', {ext: '.min.js'}));
 });
