@@ -13,15 +13,11 @@
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
     "typeRoots": [
-      "node_modules/@types",
-      "/"
-    ],
-    "files": [
-      "cytoscape-node-html-label.d.ts"
-    ],
-    "types": [
-      "cytoscape-node-html-label.d.ts"
+      "./node_modules/@types"
     ],
     "removeComments": true
-  }
+  },
+  "files": [
+    "./src/cytoscape-node-html-label.ts"
+  ]
 }

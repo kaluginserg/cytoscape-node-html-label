@@ -15,61 +15,13 @@
     }
     return undefined;
   };
-  var $$assign = function (target) {
-    'use strict';
-    var arg = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-      arg[_i - 1] = arguments[_i];
-    }
-    if (target === undefined || target === null) {
-      throw new TypeError('Cannot convert first argument to object');
-    }
-    var to = Object(target);
-    for (var i = 1; i < arguments.length; i++) {
-      var nextSource = arguments[i];
-      if (nextSource === undefined || nextSource === null) {
-        continue;
-      }
-      var keysArray = Object.keys(Object(nextSource));
-      for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
-        var nextKey = keysArray[nextIndex];
-        var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
-        if (desc !== undefined && desc.enumerable) {
-          to[nextKey] = nextSource[nextKey];
-        }
-      }
-    }
-    return to;
-  };
   var LabelElement = (function () {
-    function LabelElement(_a) {
-      var node = _a.node, id = _a.id, baseClassName = _a.baseClassName, _b = _a.tpl, tpl = _b === void 0 ? function () {
-          return "";
-        } : _b, _c = _a.cssClass, cssClass = _c === void 0 ? null : _c, _d = _a.position,
-        position = _d === void 0 ? null : _d, _e = _a.data, data = _e === void 0 ? null : _e, _f = _a.halign,
-        halign = _f === void 0 ? "center" : _f, _g = _a.valign, valign = _g === void 0 ? "center" : _g,
-        _h = _a.halignBox, halignBox = _h === void 0 ? "center" : _h, _j = _a.valignBox,
-        valignBox = _j === void 0 ? "center" : _j;
-      var _align = {
-        "top": -.5,
-        "left": -.5,
-        "center": 0,
-        "right": .5,
-        "bottom": .5
-      };
-      var _alignBox = {
-        "top": -100,
-        "left": -100,
-        "center": -50,
-        "right": 0,
-        "bottom": 0
-      };
-      this._align = [_align[halign], _align[valign], _alignBox[halignBox], _alignBox[valignBox]];
+    function LabelElement(_a, params) {
+      var node = _a.node, baseClassName = _a.baseClassName, _b = _a.position, position = _b === void 0 ? null : _b,
+        _c = _a.data, data = _c === void 0 ? null : _c;
+      this.updateParams(params);
       this._node = node;
-      this.id = id;
       this._baseElementClassName = baseClassName;
-      this.cssClass = cssClass;
-      this.tpl = tpl;
       this.init();
       if (data) {
         this.updateData(data);
@@ -79,6 +31,29 @@
       }
     }
 
+    LabelElement.prototype.updateParams = function (_a) {
+      var _b = _a.tpl, tpl = _b === void 0 ? function () {
+          return "";
+        } : _b, _c = _a.cssClass, cssClass = _c === void 0 ? null : _c, _d = _a.halign,
+        halign = _d === void 0 ? "center" : _d, _e = _a.valign, valign = _e === void 0 ? "center" : _e,
+        _f = _a.halignBox, halignBox = _f === void 0 ? "center" : _f, _g = _a.valignBox,
+        valignBox = _g === void 0 ? "center" : _g;
+      var _align = {
+        "top": -.5,
+        "left": -.5,
+        "center": 0,
+        "right": .5,
+        "bottom": .5
+      };
+      this._align = [
+        _align[halign],
+        _align[valign],
+        100 * (_align[halignBox] - 0.5),
+        100 * (_align[valignBox] - 0.5)
+      ];
+      this.cssClass = cssClass;
+      this.tpl = tpl;
+    };
     LabelElement.prototype.updateData = function (data) {
       try {
         this._node.innerHTML = this.tpl(data);
@@ -94,7 +69,6 @@
       this._renderPosition(pos);
     };
     LabelElement.prototype.init = function () {
-      this._node.setAttribute("id", this.id);
       this._node.setAttribute("class", this._baseElementClassName);
       if (this.cssClass && this.cssClass.length) {
         this._node.classList.add(this.cssClass);
@@ -124,43 +98,39 @@
       this._cssElem = this._cssWrap + '__e';
       this.addCssToDocument();
       this._node.className = this._cssWrap;
-      this._elements = [];
+      this._elements = {};
     }
 
-    LabelContainer.prototype.addElem = function (id, param, payload) {
+    LabelContainer.prototype.addOrUpdateElem = function (id, param, payload) {
       if (payload === void 0) {
         payload = {};
       }
-      var nodeElem = document.createElement('div');
-      this._node.appendChild(nodeElem);
-      var newElem = new LabelElement($$assign({}, param, {
-        node: nodeElem,
-        id: id,
-        baseClassName: this._cssElem,
-        data: payload.data,
-        position: payload.position
-      }));
-      this._elements.push(newElem);
+      var cur = this._elements[id];
+      if (cur) {
+        cur.updateParams(param);
+        cur.updateData(payload.data);
+        cur.updatePosition(payload.position);
+      }
+      else {
+        var nodeElem = document.createElement('div');
+        this._node.appendChild(nodeElem);
+        this._elements[id] = new LabelElement({
+          node: nodeElem,
+          baseClassName: this._cssElem,
+          data: payload.data,
+          position: payload.position
+        }, param);
+      }
     };
     LabelContainer.prototype.removeElemById = function (id) {
-      for (var j = this._elements.length - 1; j >= 0; j--) {
-        if (this._elements[j].id === id) {
-          console.log(j);
-          this._node.removeChild(this._elements.splice(j, 1)[0].getNode());
-          break;
-        }
-      }
+      this._node.removeChild(this._elements[id].getNode());
+      delete this._elements[id];
     };
-    LabelContainer.prototype.updateElemPosition = function (data) {
-      var ele = this.getElemById(data.id);
+    LabelContainer.prototype.updateElemPosition = function (id, position) {
+      var ele = this._elements[id];
       if (ele) {
-        ele.updatePosition(data.position);
+        ele.updatePosition(position);
       }
-    };
-    LabelContainer.prototype.getElemById = function (id) {
-      return $$find(this._elements, function (x) {
-        return x.id === id;
-      });
     };
     LabelContainer.prototype.updatePanZoom = function (_a) {
       var pan = _a.pan, zoom = _a.zoom;
@@ -184,7 +154,6 @@
   }());
 
   function cyNodeHtmlLabel(_cy, params) {
-    console.log('cyNodeHtmlLabel');
     var _params = (!params || typeof params !== "object") ? [] : params;
     var _lc = createLabelContainer();
     _cy.one('render', function (e) {
@@ -216,7 +185,7 @@
       _params.forEach(function (x) {
         cy.elements(x.query).forEach(function (d) {
           if (d.isNode()) {
-            _lc.addElem(d.id(), x, {
+            _lc.addOrUpdateElem(d.id(), x, {
               position: getNodePosition(d),
               data: d.data()
             });
@@ -227,11 +196,11 @@
 
     function addCyHandler(ev) {
       var target = ev.target;
-      var param = $$find(_params, function (x) {
+      var param = $$find(_params.slice().reverse(), function (x) {
         return target.is(x.query);
       });
       if (param) {
-        _lc.addElem(target.id(), param, {
+        _lc.addOrUpdateElem(target.id(), param, {
           position: getNodePosition(target),
           data: target.data()
         });
@@ -243,40 +212,36 @@
       _params.forEach(function (x) {
         cy.elements(x.query).forEach(function (d) {
           if (d.isNode()) {
-            _lc.updateElemPosition({
-              id: d.id(),
-              position: getNodePosition(d)
-            });
+            _lc.updateElemPosition(d.id(), getNodePosition(d));
           }
         });
       });
     }
 
     function removeCyHandler(ev) {
-      var target = ev.target;
-      var param = $$find(_params, function (x) {
-        return target.is(x.query);
-      });
-      if (param) {
-        _lc.removeElemById(target.id());
-      }
+      _lc.removeElemById(ev.target.id());
     }
 
     function moveCyHandler(ev) {
-      var target = ev.target;
-      var param = $$find(_params, function (x) {
-        return target.is(x.query);
-      });
-      if (param) {
-        _lc.updateElemPosition({
-          id: target.id(),
-          position: getNodePosition(target)
-        });
-      }
+      _lc.updateElemPosition(ev.target.id(), getNodePosition(ev.target));
     }
 
     function updateDataCyHandler(ev) {
-      console.log('do update data', ev);
+      setTimeout(function () {
+        var target = ev.target;
+        var param = $$find(_params.slice().reverse(), function (x) {
+          return target.is(x.query);
+        });
+        if (param) {
+          _lc.addOrUpdateElem(target.id(), param, {
+            position: getNodePosition(target),
+            data: target.data()
+          });
+        }
+        else {
+          _lc.removeElemById(target.id());
+        }
+      }, 0);
     }
 
     function wrapCyHandler(_a) {
@@ -321,4 +286,3 @@
     register(cytoscape);
   }
 }());
-//# sourceMappingURL=cytoscape-node-html-label.js.map

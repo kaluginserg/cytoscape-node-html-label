@@ -3,9 +3,9 @@
   "version": "0.2.0",
   "description": "labels for cytoscape nodes",
   "author": "Kalugin Sergey <kalugin.perm@gmail.com> (https://github.com/kaluginserg)",
-  "main": "cytoscape-node-html-label.js",
+  "main": "./dist/cytoscape-node-html-label.js",
   "spm": {
-    "main": "cytoscape-node-html-label.js"
+    "main": "./dist/cytoscape-node-html-label.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -18,7 +18,8 @@
   "keywords": [
     "cytoscape",
     "cytoscape-extension",
-    "cytoscape-labels"
+    "cytoscape-labels",
+    "cytoscape html label"
   ],
   "license": "MIT",
   "bugs": {
@@ -29,7 +30,10 @@
     "gulp": "^3.9.1",
     "gulp-bump": "^2.7.0",
     "gulp-git": "^2.4.1",
+    "gulp-rename": "^1.2.2",
     "gulp-tag-version": "^1.3.0",
+    "gulp-typescript": "^3.2.1",
+    "gulp-uglify": "^3.0.0",
     "jasmine": "^2.7.0",
     "karma": "^1.7.0",
     "karma-chrome-launcher": "^2.2.0",

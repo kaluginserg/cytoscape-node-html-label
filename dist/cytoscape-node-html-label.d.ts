@@ -1,10 +1,13 @@
+type IHAlign = "left" | "center" | "right";
+type IVAlign = "top" | "center" | "bottom";
+
 export declare interface CytoscapeNodeHtmlParams {
   query ?: string;
-  width ?: number;
-  positionY ?: string;
-  positionX ?: string;
-  wrapCssClasses ?: string;
-  fontSizeBase ?: number;
+  halign ?: IHAlign;
+  valign ?: IVAlign;
+  halignBox ?: IHAlign;
+  valignBox ?: IVAlign;
+  cssClass ?: string;
   tpl ?: (d: any) => string;
 }
 
