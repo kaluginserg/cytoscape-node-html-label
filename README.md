@@ -7,6 +7,10 @@ cytoscape-node-html-label
 add html labels for cytoscape nodes.
 Demo: https://kaluginserg.github.io/cytoscape-node-html-label/
 
+## Fitures
+- optimise for hight perfomance with hight number nodes, for smooth panning and zooming.
+- customise any labels with different termplates.
+
 ## Dependencies
 
  * Cytoscape.js ^3.0.0
@@ -63,4 +67,38 @@ cy.nodeHtmlLabel(
     );
 ```
 
-#### Thank you for use this small extension.
+## Example usage
+```js
+// create Cy instance
+var cy = cytoscape({
+    container: document.getElementById('cy'),
+    layout: {
+        name: 'random'
+    },
+    elements: [ // your cy elements
+        { group: "nodes", data: { id: 'a1', name: 'a10' }, classes: 'l1' },
+        { group: "nodes", data: { id: 'a1', name: 'a10' }, classes: 'l1' },
+        { group: "nodes", data: { id: 'a1', name: 'a10' }, classes: 'l1' },
+        { group: "nodes", data: { id: 'a5', name: 'a5' }, classes: 'l2' }
+    ]
+});
+
+// set nodeHtmlLabel for your Cy instance
+cy.nodeHtmlLabel([{
+        query: '.l1',
+        valign: "top",
+        halign: "left",
+        valignBox: "top",
+        halignBox: "left",
+        tpl: function(data) {
+            return '<p class="cy-title__p1">' + data.id + '</p>' + '<p  class="cy-title__p2">' + data.name + '</p>';
+        }
+    },
+    {
+        query: '.l2',
+        tpl: function(data) {
+            return '<p class="cy-title__p1">' + data.id + '</p>' + '<p  class="cy-title__p2">' + data.name + '</p>';
+        }
+    }
+]);
+```
