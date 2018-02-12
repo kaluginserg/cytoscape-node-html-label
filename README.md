@@ -8,8 +8,8 @@ add html labels for cytoscape nodes.
 Demo: https://kaluginserg.github.io/cytoscape-node-html-label/
 
 ## Fitures
-- optimise for hight perfomance with hight number nodes, for smooth panning and zooming.
-- customise any labels with different termplates.
+- optimised for high performance with high number nodes, for smooth panning and zooming.
+- customizable any labels with different templates.
 
 ## Dependencies
 
