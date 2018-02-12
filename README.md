@@ -1,6 +1,10 @@
 cytoscape-node-html-label
 ================================================================================
 
+## Brief instruction
+
+1) `npm install cytoscape-node-html-label`
+2) `cyInstance.nodeHtmlLabel( [{ tpl: d => '<div>' + d + '</div>' }] );`
 
 ## Description
 
@@ -53,7 +57,7 @@ require(['cytoscape', 'cytoscape-node-html-label'], function( cytoscape, nodeHtm
 nodeHtmlLabel parameter is an array of options:
 
 ```js
-cy.nodeHtmlLabel(
+cyInstance.nodeHtmlLabel(
 [
     {
         query: 'node', // cytoscape query selector
@@ -62,7 +66,7 @@ cy.nodeHtmlLabel(
         halignBox: 'center', // title vertical position. Can be 'left',''center, 'right'
         valignBox: 'center', // title relative box vertical position. Can be 'top',''center, 'bottom'
         cssClass: '', // any classes will be as attribute of <div> container for every title
-        tpl: function(data){return data +''} // your html template here
+        tpl: function(data){return '<span>' + data + '</span>';} // your html template here
     }
 ]
     );
@@ -73,7 +77,7 @@ cy.nodeHtmlLabel(
 Code example:
 ```js
 // create Cy instance
-var cy = cytoscape({
+var cyInstance = cytoscape({
     container: document.getElementById('cy'),
     layout: {
         name: 'random'
@@ -87,7 +91,7 @@ var cy = cytoscape({
 });
 
 // set nodeHtmlLabel for your Cy instance
-cy.nodeHtmlLabel([{
+cyInstance.nodeHtmlLabel([{
         query: '.l1',
         valign: "top",
         halign: "left",
