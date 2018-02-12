@@ -1,7 +1,7 @@
 cytoscape-node-html-label
 ================================================================================
 
-## Brief instruction
+#### Brief instruction
 
 1) `npm install cytoscape-node-html-label`
 2) `cyInstance.nodeHtmlLabel( [{ tpl: d => '<div>' + d + '</div>' }] );`
