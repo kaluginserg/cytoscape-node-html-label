@@ -68,6 +68,8 @@ cy.nodeHtmlLabel(
 ```
 
 ## Example usage
+
+Code example:
 ```js
 // create Cy instance
 var cy = cytoscape({
@@ -102,3 +104,5 @@ cy.nodeHtmlLabel([{
     }
 ]);
 ```
+
+Demo here: https://kaluginserg.github.io/cytoscape-node-html-label/
