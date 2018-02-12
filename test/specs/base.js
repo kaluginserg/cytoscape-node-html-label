@@ -18,9 +18,12 @@ describe('base', function () {
     });
   });
 
-  function isMainDefinedTest() {
+  function isCyDefinedTest() {
     expect(cy).toBeDefined();
-    expect(cy.nodeHtmlLabel).toBeDefined();
+  }
+
+  function isMainDefinedTest() {
+    isCyDefinedTest();
     expect(typeof cy.nodeHtmlLabel).toEqual('function');
   }
 
@@ -58,6 +61,10 @@ describe('base', function () {
     });
     cy.layout(layoutOptions).run();
   }
+
+  it('cy was defined', function () {
+    isCyDefinedTest();
+  });
 
   it('nodeHtmlLabel was defined in cy', function () {
     isMainDefinedTest();

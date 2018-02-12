@@ -17,8 +17,7 @@
     };
     var LabelElement = (function () {
         function LabelElement(_a, params) {
-            var node = _a.node, baseClassName = _a.baseClassName, _b = _a.position,
-                position = _b === void 0 ? null : _b, _c = _a.data, data = _c === void 0 ? null : _c;
+            var node = _a.node, baseClassName = _a.baseClassName, _b = _a.position, position = _b === void 0 ? null : _b, _c = _a.data, data = _c === void 0 ? null : _c;
             this.updateParams(params);
             this._node = node;
             this._baseElementClassName = baseClassName;
@@ -30,14 +29,8 @@
                 this.updatePosition(position);
             }
         }
-
         LabelElement.prototype.updateParams = function (_a) {
-            var _b = _a.tpl, tpl = _b === void 0 ? function () {
-                    return "";
-                } : _b, _c = _a.cssClass, cssClass = _c === void 0 ? null : _c, _d = _a.halign,
-                halign = _d === void 0 ? "center" : _d, _e = _a.valign, valign = _e === void 0 ? "center" : _e,
-                _f = _a.halignBox, halignBox = _f === void 0 ? "center" : _f, _g = _a.valignBox,
-                valignBox = _g === void 0 ? "center" : _g;
+            var _b = _a.tpl, tpl = _b === void 0 ? function () { return ""; } : _b, _c = _a.cssClass, cssClass = _c === void 0 ? null : _c, _d = _a.halign, halign = _d === void 0 ? "center" : _d, _e = _a.valign, valign = _e === void 0 ? "center" : _e, _f = _a.halignBox, halignBox = _f === void 0 ? "center" : _f, _g = _a.valignBox, valignBox = _g === void 0 ? "center" : _g;
             var _align = {
                 "top": -.5,
                 "left": -.5,
@@ -100,11 +93,8 @@
             this._node.className = this._cssWrap;
             this._elements = {};
         }
-
         LabelContainer.prototype.addOrUpdateElem = function (id, param, payload) {
-            if (payload === void 0) {
-                payload = {};
-            }
+            if (payload === void 0) { payload = {}; }
             var cur = this._elements[id];
             if (cur) {
                 cur.updateParams(param);
@@ -154,7 +144,6 @@
         };
         return LabelContainer;
     }());
-
     function cyNodeHtmlLabel(_cy, params) {
         var _params = (!params || typeof params !== "object") ? [] : params;
         var _lc = createLabelContainer();
@@ -169,7 +158,6 @@
         _cy.on('pan zoom', wrapCyHandler);
         _cy.on('drag', moveCyHandler);
         return _cy;
-
         function createLabelContainer() {
             var _cyContainer = _cy.container();
             var _titlesContainer = document.createElement('div');
@@ -181,7 +169,6 @@
             _cyCanvas.parentNode.appendChild(_titlesContainer);
             return new LabelContainer(_titlesContainer);
         }
-
         function createNodesCyHandler(_a) {
             var cy = _a.cy;
             _params.forEach(function (x) {
@@ -195,12 +182,9 @@
                 });
             });
         }
-
         function addCyHandler(ev) {
             var target = ev.target;
-            var param = $$find(_params.slice().reverse(), function (x) {
-                return target.is(x.query);
-            });
+            var param = $$find(_params.slice().reverse(), function (x) { return target.is(x.query); });
             if (param) {
                 _lc.addOrUpdateElem(target.id(), param, {
                     position: getNodePosition(target),
@@ -208,7 +192,6 @@
                 });
             }
         }
-
         function layoutstopHandler(_a) {
             var cy = _a.cy;
             _params.forEach(function (x) {
@@ -219,21 +202,16 @@
                 });
             });
         }
-
         function removeCyHandler(ev) {
             _lc.removeElemById(ev.target.id());
         }
-
         function moveCyHandler(ev) {
             _lc.updateElemPosition(ev.target.id(), getNodePosition(ev.target));
         }
-
         function updateDataCyHandler(ev) {
             setTimeout(function () {
                 var target = ev.target;
-                var param = $$find(_params.slice().reverse(), function (x) {
-                    return target.is(x.query);
-                });
+                var param = $$find(_params.slice().reverse(), function (x) { return target.is(x.query); });
                 if (param) {
                     _lc.addOrUpdateElem(target.id(), param, {
                         position: getNodePosition(target),
@@ -245,7 +223,6 @@
                 }
             }, 0);
         }
-
         function wrapCyHandler(_a) {
             var cy = _a.cy;
             _lc.updatePanZoom({
@@ -253,7 +230,6 @@
                 zoom: cy.zoom()
             });
         }
-
         function getNodePosition(node) {
             return {
                 w: node.width(),
@@ -263,7 +239,6 @@
             };
         }
     }
-
     var register = function (cy) {
         if (!cy) {
             return;
@@ -288,3 +263,4 @@
         register(cytoscape);
     }
 }());
+//# sourceMappingURL=cytoscape-node-html-label.js.map

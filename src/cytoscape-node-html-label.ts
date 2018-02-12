@@ -3,6 +3,26 @@ declare const module: any;
 declare const define: any;
 declare const cytoscape: any;
 
+declare type IHAlign = "left" | "center" | "right";
+declare type IVAlign = "top" | "center" | "bottom";
+
+declare interface CytoscapeNodeHtmlParams {
+  query ?: string;
+  halign ?: IHAlign;
+  valign ?: IVAlign;
+  halignBox ?: IHAlign;
+  valignBox ?: IVAlign;
+  cssClass ?: string;
+  tpl ?: (d: any) => string;
+}
+
+declare namespace cytoscape {
+  export type CytoscapeNodeHtmlLabel = CytoscapeNodeHtmlParams;
+
+  export function nodeHtmlLabel(o: CytoscapeNodeHtmlLabel[]): any;
+}
+
+
 (function () {
   "use strict";
   const $$find = function <T>(arr: T[], predicate: (a: T) => boolean) {
@@ -21,19 +41,6 @@ declare const cytoscape: any;
     }
     return undefined;
   };
-
-  type IHAlign = "left" | "center" | "right";
-  type IVAlign = "top" | "center" | "bottom";
-
-  interface ICytoscapeNodeHtmlParams {
-    query ?: string;
-    halign ?: IHAlign;
-    valign ?: IVAlign;
-    halignBox ?: IHAlign;
-    valignBox ?: IVAlign;
-    cssClass ?: string;
-    tpl ?: (d: any) => string;
-  }
 
   interface ICyEventObject {
     cy: any;
@@ -69,7 +76,7 @@ declare const cytoscape: any;
     private _align: [number, number, number, number];
 
     constructor({node, baseClassName, position = null, data = null}: ILabelElement,
-                params: ICytoscapeNodeHtmlParams) {
+                params: CytoscapeNodeHtmlParams) {
 
       this.updateParams(params);
       this._node = node;
@@ -92,7 +99,7 @@ declare const cytoscape: any;
                    valign = "center",
                    halignBox = "center",
                    valignBox = "center"
-                 }: ICytoscapeNodeHtmlParams) {
+                 }: CytoscapeNodeHtmlParams) {
 
       const _align = {
         "top": -.5,
@@ -174,7 +181,7 @@ declare const cytoscape: any;
       this._elements = <HashTableElements>{};
     }
 
-    addOrUpdateElem(id: string, param: ICytoscapeNodeHtmlParams, payload: { data?: any, position?: ICytoscapeNodeHtmlPosition } = {}) {
+    addOrUpdateElem(id: string, param: CytoscapeNodeHtmlParams, payload: { data?: any, position?: ICytoscapeNodeHtmlPosition } = {}) {
       let cur = this._elements[id];
       if (cur) {
         cur.updateParams(param);
@@ -228,7 +235,7 @@ declare const cytoscape: any;
     }
   }
 
-  function cyNodeHtmlLabel(_cy: any, params: ICytoscapeNodeHtmlParams[]) {
+  function cyNodeHtmlLabel(_cy: any, params: CytoscapeNodeHtmlParams[]) {
     const _params = (!params || typeof params !== "object") ? [] : params;
     const _lc = createLabelContainer();
 

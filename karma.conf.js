@@ -16,7 +16,7 @@ module.exports = function (config) {
     // list of files / patterns to load in the browser
     files: [
       {pattern: 'libs/cytoscape.min.js', watched: false},
-      {pattern: 'cytoscape-node-html-label.js', watched: false},
+      {pattern: 'dist/cytoscape-node-html-label.js', watched: false},
       {pattern: 'test/**/*.css'},
       'test/**/*.js'
     ],

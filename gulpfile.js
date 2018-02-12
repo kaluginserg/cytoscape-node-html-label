@@ -6,8 +6,6 @@ var tag_version = require('gulp-tag-version');
 var rename = require('gulp-rename');
 
 var uglify = require('gulp-uglify');
-var ts = require("gulp-typescript");
-var tsProject = ts.createProject("tsconfig.json");
 
 var Server = require('karma').Server;
 
@@ -36,13 +34,6 @@ gulp.task('test', function (done) {
   new Server({
     configFile: __dirname + '/karma.conf.js',
   }, done).start();
-});
-
-gulp.task('ts', function () {
-  return tsProject.src()
-    .pipe(tsProject())
-    .js
-    .pipe(gulp.dest("dist"));
 });
 
 gulp.task('min', function () {

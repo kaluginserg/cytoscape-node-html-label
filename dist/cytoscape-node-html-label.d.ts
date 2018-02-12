@@ -1,18 +1,19 @@
-type IHAlign = "left" | "center" | "right";
-type IVAlign = "top" | "center" | "bottom";
-
-export declare interface CytoscapeNodeHtmlParams {
-  query ?: string;
-  halign ?: IHAlign;
-  valign ?: IVAlign;
-  halignBox ?: IHAlign;
-  valignBox ?: IVAlign;
-  cssClass ?: string;
-  tpl ?: (d: any) => string;
+declare const require: any;
+declare const module: any;
+declare const define: any;
+declare const cytoscape: any;
+declare type IHAlign = "left" | "center" | "right";
+declare type IVAlign = "top" | "center" | "bottom";
+interface CytoscapeNodeHtmlParams {
+    query?: string;
+    halign?: IHAlign;
+    valign?: IVAlign;
+    halignBox?: IHAlign;
+    valignBox?: IVAlign;
+    cssClass?: string;
+    tpl?: (d: any) => string;
 }
-
-export declare namespace cytoscape {
-  export type CytoscapeNodeHtmlLabel = CytoscapeNodeHtmlParams;
-
-  export function nodeHtmlLabel(o: CytoscapeNodeHtmlLabel[]): any;
+declare namespace cytoscape {
+    type CytoscapeNodeHtmlLabel = CytoscapeNodeHtmlParams;
+    function nodeHtmlLabel(o: CytoscapeNodeHtmlLabel[]): any;
 }
