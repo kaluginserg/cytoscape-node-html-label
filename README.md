@@ -4,7 +4,8 @@ cytoscape-node-html-label
 
 ## Description
 
-add html labels for cytoscape nodes.
+This extension provide ability adding labels for Cytoscape nodes.
+
 Demo: https://kaluginserg.github.io/cytoscape-node-html-label/
 
 ## Fitures
