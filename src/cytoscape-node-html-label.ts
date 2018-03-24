@@ -1,12 +1,7 @@
-declare const require: any;
-declare const module: any;
-declare const define: any;
-declare const cytoscape: any;
+type IHAlign = "left" | "center" | "right";
+type IVAlign = "top" | "center" | "bottom";
 
-declare type IHAlign = "left" | "center" | "right";
-declare type IVAlign = "top" | "center" | "bottom";
-
-declare interface CytoscapeNodeHtmlParams {
+interface CytoscapeNodeHtmlParams {
   query ?: string;
   halign ?: IHAlign;
   valign ?: IVAlign;
@@ -16,18 +11,11 @@ declare interface CytoscapeNodeHtmlParams {
   tpl ?: (d: any) => string;
 }
 
-declare namespace cytoscape {
-  export type CytoscapeNodeHtmlLabel = CytoscapeNodeHtmlParams;
-
-  export function nodeHtmlLabel(o: CytoscapeNodeHtmlLabel[]): any;
-}
-
-
 (function () {
   "use strict";
   const $$find = function <T>(arr: T[], predicate: (a: T) => boolean) {
-    if (typeof predicate !== 'function') {
-      throw new TypeError('predicate must be a function');
+    if (typeof predicate !== "function") {
+      throw new TypeError("predicate must be a function");
     }
     let length = arr.length >>> 0;
     let thisArg = arguments[1];
@@ -174,8 +162,8 @@ declare namespace cytoscape {
 
     constructor(node: HTMLElement) {
       this._node = node;
-      this._cssWrap = 'cy-node-html-' + (+new Date());
-      this._cssElem = this._cssWrap + '__e';
+      this._cssWrap = "cy-node-html-" + (+new Date());
+      this._cssElem = this._cssWrap + "__e";
       this.addCssToDocument();
       this._node.className = this._cssWrap;
       this._elements = <HashTableElements>{};
@@ -188,7 +176,7 @@ declare namespace cytoscape {
         cur.updateData(payload.data);
         cur.updatePosition(payload.position);
       } else {
-        let nodeElem = document.createElement('div');
+        let nodeElem = document.createElement("div");
         this._node.appendChild(nodeElem);
 
         this._elements[id] = new LabelElement({
@@ -217,7 +205,7 @@ declare namespace cytoscape {
     updatePanZoom({pan, zoom}: { pan: { x: number, y: number }, zoom: number }) {
       const val = `translate(${pan.x}px,${pan.y}px) scale(${zoom})`;
       const stl = <any>this._node.style;
-      const origin = 'top left';
+      const origin = "top left";
 
       stl.webkitTransform = val;
       stl.msTransform = val;
@@ -228,9 +216,9 @@ declare namespace cytoscape {
     }
 
     private addCssToDocument() {
-      let stylesWrap = 'position:absolute;z-index:10;width:500px;pointer-events:none;margin:0;padding:0;border:0;outline:0';
-      let stylesElem = 'position:absolute';
-      document.querySelector('head').innerHTML +=
+      let stylesWrap = "position:absolute;z-index:10;width:500px;pointer-events:none;margin:0;padding:0;border:0;outline:0";
+      let stylesElem = "position:absolute";
+      document.querySelector("head").innerHTML +=
           `<style>.${this._cssWrap}{${stylesWrap}} .${this._cssElem}{${stylesElem}}</style>`;
     }
   }
@@ -239,25 +227,25 @@ declare namespace cytoscape {
     const _params = (!params || typeof params !== "object") ? [] : params;
     const _lc = createLabelContainer();
 
-    _cy.one('render', (e: any) => {
+    _cy.one("render", (e: any) => {
       createNodesCyHandler(e);
       wrapCyHandler(e);
     });
-    _cy.on('add', addCyHandler);
-    _cy.on('layoutstop', layoutstopHandler);
-    _cy.on('remove', removeCyHandler);
-    _cy.on('data', updateDataCyHandler);
-    _cy.on('pan zoom', wrapCyHandler);
-    _cy.on('drag', moveCyHandler);
+    _cy.on("add", addCyHandler);
+    _cy.on("layoutstop", layoutstopHandler);
+    _cy.on("remove", removeCyHandler);
+    _cy.on("data", updateDataCyHandler);
+    _cy.on("pan zoom", wrapCyHandler);
+    _cy.on("drag", moveCyHandler);
 
     return _cy;
 
     function createLabelContainer(): LabelContainer {
       let _cyContainer = _cy.container();
-      let _titlesContainer = document.createElement('div');
+      let _titlesContainer = document.createElement("div");
 
-      let _cyCanvas = _cyContainer.querySelector('canvas');
-      let cur = _cyContainer.querySelector('[class^="cy-node-html"]');
+      let _cyCanvas = _cyContainer.querySelector("canvas");
+      let cur = _cyContainer.querySelector("[class^='cy-node-html']");
       if (cur) {
         _cyCanvas.parentNode.removeChild(cur);
       }
@@ -334,8 +322,8 @@ declare namespace cytoscape {
       return {
         w: node.width(),
         h: node.height(),
-        x: node.position('x'),
-        y: node.position('y')
+        x: node.position("x"),
+        y: node.position("y")
       };
     }
   }
@@ -347,24 +335,24 @@ declare namespace cytoscape {
       return;
     } // can't register if cytoscape unspecified
 
-    cy('core', 'nodeHtmlLabel', function (optArr: any) {
+    cy("core", "nodeHtmlLabel", function (optArr: any) {
       return cyNodeHtmlLabel(this, optArr);
     });
   };
 
-  if (typeof module !== 'undefined' && module.exports) { // expose as a commonjs module
+  if (typeof module !== "undefined" && module.exports) { // expose as a commonjs module
     module.exports = function (cy: any) {
       register(cy);
     };
   } else {
-    if (typeof define !== 'undefined' && define.amd) { // expose as an amd/requirejs module
-      define('cytoscape-nodeHtmlLabel', function () {
+    if (typeof define !== "undefined" && define.amd) { // expose as an amd/requirejs module
+      define("cytoscape-nodeHtmlLabel", function () {
         return register;
       });
     }
   }
 
-  if (typeof cytoscape !== 'undefined') { // expose to global cytoscape (i.e. window.cytoscape)
+  if (typeof cytoscape !== "undefined") { // expose to global cytoscape (i.e. window.cytoscape)
     register(cytoscape);
   }
 

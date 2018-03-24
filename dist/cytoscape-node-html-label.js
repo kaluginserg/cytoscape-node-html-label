@@ -1,8 +1,8 @@
 (function () {
     "use strict";
     var $$find = function (arr, predicate) {
-        if (typeof predicate !== 'function') {
-            throw new TypeError('predicate must be a function');
+        if (typeof predicate !== "function") {
+            throw new TypeError("predicate must be a function");
         }
         var length = arr.length >>> 0;
         var thisArg = arguments[1];
@@ -87,8 +87,8 @@
     var LabelContainer = (function () {
         function LabelContainer(node) {
             this._node = node;
-            this._cssWrap = 'cy-node-html-' + (+new Date());
-            this._cssElem = this._cssWrap + '__e';
+            this._cssWrap = "cy-node-html-" + (+new Date());
+            this._cssElem = this._cssWrap + "__e";
             this.addCssToDocument();
             this._node.className = this._cssWrap;
             this._elements = {};
@@ -102,7 +102,7 @@
                 cur.updatePosition(payload.position);
             }
             else {
-                var nodeElem = document.createElement('div');
+                var nodeElem = document.createElement("div");
                 this._node.appendChild(nodeElem);
                 this._elements[id] = new LabelElement({
                     node: nodeElem,
@@ -128,7 +128,7 @@
             var pan = _a.pan, zoom = _a.zoom;
             var val = "translate(" + pan.x + "px," + pan.y + "px) scale(" + zoom + ")";
             var stl = this._node.style;
-            var origin = 'top left';
+            var origin = "top left";
             stl.webkitTransform = val;
             stl.msTransform = val;
             stl.transform = val;
@@ -137,9 +137,9 @@
             stl.transformOrigin = origin;
         };
         LabelContainer.prototype.addCssToDocument = function () {
-            var stylesWrap = 'position:absolute;z-index:10;width:500px;pointer-events:none;margin:0;padding:0;border:0;outline:0';
-            var stylesElem = 'position:absolute';
-            document.querySelector('head').innerHTML +=
+            var stylesWrap = "position:absolute;z-index:10;width:500px;pointer-events:none;margin:0;padding:0;border:0;outline:0";
+            var stylesElem = "position:absolute";
+            document.querySelector("head").innerHTML +=
                 "<style>." + this._cssWrap + "{" + stylesWrap + "} ." + this._cssElem + "{" + stylesElem + "}</style>";
         };
         return LabelContainer;
@@ -147,22 +147,22 @@
     function cyNodeHtmlLabel(_cy, params) {
         var _params = (!params || typeof params !== "object") ? [] : params;
         var _lc = createLabelContainer();
-        _cy.one('render', function (e) {
+        _cy.one("render", function (e) {
             createNodesCyHandler(e);
             wrapCyHandler(e);
         });
-        _cy.on('add', addCyHandler);
-        _cy.on('layoutstop', layoutstopHandler);
-        _cy.on('remove', removeCyHandler);
-        _cy.on('data', updateDataCyHandler);
-        _cy.on('pan zoom', wrapCyHandler);
-        _cy.on('drag', moveCyHandler);
+        _cy.on("add", addCyHandler);
+        _cy.on("layoutstop", layoutstopHandler);
+        _cy.on("remove", removeCyHandler);
+        _cy.on("data", updateDataCyHandler);
+        _cy.on("pan zoom", wrapCyHandler);
+        _cy.on("drag", moveCyHandler);
         return _cy;
         function createLabelContainer() {
             var _cyContainer = _cy.container();
-            var _titlesContainer = document.createElement('div');
-            var _cyCanvas = _cyContainer.querySelector('canvas');
-            var cur = _cyContainer.querySelector('[class^="cy-node-html"]');
+            var _titlesContainer = document.createElement("div");
+            var _cyCanvas = _cyContainer.querySelector("canvas");
+            var cur = _cyContainer.querySelector("[class^='cy-node-html']");
             if (cur) {
                 _cyCanvas.parentNode.removeChild(cur);
             }
@@ -234,8 +234,8 @@
             return {
                 w: node.width(),
                 h: node.height(),
-                x: node.position('x'),
-                y: node.position('y')
+                x: node.position("x"),
+                y: node.position("y")
             };
         }
     }
@@ -243,23 +243,23 @@
         if (!cy) {
             return;
         }
-        cy('core', 'nodeHtmlLabel', function (optArr) {
+        cy("core", "nodeHtmlLabel", function (optArr) {
             return cyNodeHtmlLabel(this, optArr);
         });
     };
-    if (typeof module !== 'undefined' && module.exports) {
+    if (typeof module !== "undefined" && module.exports) {
         module.exports = function (cy) {
             register(cy);
         };
     }
     else {
-        if (typeof define !== 'undefined' && define.amd) {
-            define('cytoscape-nodeHtmlLabel', function () {
+        if (typeof define !== "undefined" && define.amd) {
+            define("cytoscape-nodeHtmlLabel", function () {
                 return register;
             });
         }
     }
-    if (typeof cytoscape !== 'undefined') {
+    if (typeof cytoscape !== "undefined") {
         register(cytoscape);
     }
 }());
