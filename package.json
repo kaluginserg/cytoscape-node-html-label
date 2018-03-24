@@ -4,7 +4,6 @@
   "description": "labels for cytoscape nodes",
   "author": "Kalugin Sergey <kalugin.perm@gmail.com> (https://github.com/kaluginserg)",
   "main": "./dist/cytoscape-node-html-label.js",
-  "typings": "./dist/cytoscape-node-html-label.d.ts",
   "spm": {
     "main": "./dist/cytoscape-node-html-label.js"
   },
