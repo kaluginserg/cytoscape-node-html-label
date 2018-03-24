@@ -1,166 +1,25 @@
 <!DOCTYPE>
-
 <html>
-
 <head>
-  <title>cytoscape-node-html-label.js 1.0.4 demo</title>
+    <title>cytoscape-node-html-label.js demo</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
 
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="demo/index.css" type="text/css">
+    <script src="libs/cytoscape.min.js"></script>
+    <script src="dist/cytoscape-node-html-label.js"></script>
+    <script src="demo/sample-dataset.js"></script>
+    <script src="demo/index.js"></script>
 
-  <script src="libs/cytoscape.min.js"></script>
-  <script src="dist/cytoscape-node-html-label.js"></script>
-
-  <style>
-    body {
-      font-family: helvetica neue, helvetica, liberation sans, arial, sans-serif;
-      font-size: 14px;
-    }
-
-    #cy, #cy2 {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      z-index: 999;
-    }
-
-    h1 {
-      opacity: 0.5;
-      font-size: 1em;
-      font-weight: bold;
-    }
-
-    .cy-title {
-      text-align: center;
-    }
-
-    .cy-title_right {
-      text-align: right;
-    }
-
-    .cy-title__p1 {
-      color: #000;
-      font-size: 14px;
-      margin: 0;
-    }
-
-    .cy-title__p2 {
-      color: #646464;
-      font-size: 10px;
-      font-weight: bold;
-      margin: 0;
-    }
-
-    .cy-title__p2::before {
-      content: "{";
-      color: #2f2fb1;
-    }
-
-    .cy-title__p2::after {
-      content: "}";
-      color: #2f2fb1;
-    }
-
-    .cy-title_left {
-      text-align: left;
-    }
-  </style>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-
-      var cy = cytoscape({
-        container: document.getElementById('cy'),
-
-        layout: {
-          name: 'random',
-          animate: false
-        },
-        elements: {
-          nodes: Array.apply(null, Array(300)).map(function (d, i) {
-            return {
-              data: {id: 'd' + i, name: 'd ' + i}, classes: 'l1'
-            }
-          })
-        }
-      });
-
-      cy.nodeHtmlLabel([
-        {
-          query: '.l1',
-          tpl: function (data) {
-            return '<p class="cy-title__p1">' + data.id + '</p>' + '<p  class="cy-title__p2">' + data.name + '</p>';
-          }
-        }
-      ]);
-
-      var cy2 = cytoscape({
-        container: document.getElementById('cy2'),
-        layout: {
-          name: 'random'
-        },
-        elements: [
-          {group: "nodes", data: {id: 'a12', name: 'a2.'}, classes: 'l2'},
-          {group: "nodes", data: {id: 'a52', name: 'a5.'}, classes: 'l2'},
-          {group: "nodes", data: {id: 'a62', name: 'a6.'}, classes: 'l1'}
-        ]
-      });
-
-      cy2.nodeHtmlLabel([
-        {
-          query: '.l1',
-          valign: "top",
-          halign: "left",
-          valignBox: "top",
-          halignBox: "left",
-          tpl: function (data) {
-            return '<p class="cy-title__p1">' + data.id + '</p>' + '<p  class="cy-title__p2">' + data.name + '</p>';
-          }
-        },
-        {
-          query: '.l2',
-          halign: "center",
-          halignBox: "center",
-          tpl: function (data) {
-            return '<p class="cy-title__p1">' + data.id + '</p>' + '<p  class="cy-title__p2">' + data.name + '</p>';
-          }
-        }
-      ]);
-
-      function changeData() {
-        cy2.json({
-          elements: [
-            {group: "nodes", data: {id: 'a1', name: 'a10'}, classes: 'l1'},
-            {group: "nodes", data: {id: 'a5', name: 'a5'}, classes: 'l2'},
-            {data: {id: 'asd', name: 'asd'}, classes: 'asd'}
-          ]
-        });
-        cy2.layout({name: "random"}).run();
-      }
-
-      setTimeout(function () {
-        changeData();
-      }, 2000);
-
-    });
-  </script>
 </head>
-
 <body>
-<h1>cytoscape-node-html-label 1.0.0 demo <a href="https://github.com/kaluginserg/cytoscape-node-html-label">gitHub
-  repo</a></h1>
-<div><br><br></div>
-<p>300 cytoscape nodes</p>
-<div style="position: relative; height: 300px;  border: 1px solid">
-  <div id="cy"></div>
-</div>
+
+<h1>cytoscape-node-html-label demos. <a href="https://github.com/kaluginserg/cytoscape-node-html-label">gitHub repo</a>
+</h1>
 <br>
-<p>refresh nodes, after <strong>2000ms</strong> (add some nodes, remove some nodes, update some nodes)</p>
-<div style="position: relative; height: 300px;  border: 1px solid">
-  <div id="cy2"></div>
+<h4>144 cytoscape nodes with html labels. (smooth zoom and move)</h4>
+<div class="demo-wrap">
+    <div id="cy"></div>
 </div>
 
 </body>
-
 </html>

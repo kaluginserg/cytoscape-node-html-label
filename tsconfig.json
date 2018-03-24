@@ -15,7 +15,8 @@
       "./node_modules/@types"
     ],
     "removeComments": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "skipLibCheck": true
   },
   "files": [
     "./src/cytoscape-node-html-label.ts"
