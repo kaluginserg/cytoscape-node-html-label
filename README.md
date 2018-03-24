@@ -1,14 +1,12 @@
 cytoscape-node-html-label
 ================================================================================
 
-#### Brief instruction
-
-1) `npm install cytoscape-node-html-label`
-2) `cyInstance.nodeHtmlLabel( [{ tpl: d => '<div>' + d + '</div>' }] );`
 
 ## Description
 
-This extension provide ability adding labels for Cytoscape nodes.
+This extension provide ability adding labels for Cytoscape nodes. Simple example:
+
+`cyInstance.nodeHtmlLabel( [{ tpl: d => '<div>' + d + '</div>' }] );`
 
 Demo: https://kaluginserg.github.io/cytoscape-node-html-label/
 
