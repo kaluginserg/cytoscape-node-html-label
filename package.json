@@ -9,6 +9,7 @@
   },
   "scripts": {
     "test": "gulp test",
+    "build": "tsc --declaration",
     "start": "tsc --watch --declaration"
   },
   "repository": {
@@ -27,6 +28,9 @@
   },
   "homepage": "https://github.com/kaluginserg/cytoscape-node-html-label",
   "devDependencies": {
+    "@types/cytoscape": "^3.1.7",
+    "@types/node": "^9.6.0",
+    "@types/requirejs": "^2.1.31",
     "gulp": "^3.9.1",
     "gulp-bump": "^2.7.0",
     "gulp-git": "^2.4.1",
