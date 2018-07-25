@@ -63,6 +63,8 @@
         };
         LabelElement.prototype.init = function () {
             this._node.setAttribute("class", this._baseElementClassName);
+            var stl = this._node.style;
+            stl.position = 'absolute';
             if (this.cssClass && this.cssClass.length) {
                 this._node.classList.add(this.cssClass);
             }
@@ -89,7 +91,6 @@
             this._node = node;
             this._cssWrap = "cy-node-html-" + (+new Date());
             this._cssElem = this._cssWrap + "__e";
-            this.addCssToDocument();
             this._node.className = this._cssWrap;
             this._elements = {};
         }
@@ -136,12 +137,6 @@
             stl.msTransformOrigin = origin;
             stl.transformOrigin = origin;
         };
-        LabelContainer.prototype.addCssToDocument = function () {
-            var stylesWrap = "position:absolute;z-index:10;width:500px;pointer-events:none;margin:0;padding:0;border:0;outline:0";
-            var stylesElem = "position:absolute";
-            document.querySelector("head").innerHTML +=
-                "<style>." + this._cssWrap + "{" + stylesWrap + "} ." + this._cssElem + "{" + stylesElem + "}</style>";
-        };
         return LabelContainer;
     }());
     function cyNodeHtmlLabel(_cy, params) {
@@ -166,6 +161,17 @@
             if (cur) {
                 _cyCanvas.parentNode.removeChild(cur);
             }
+
+            var stl = _titlesContainer.style;
+            stl.position = 'absolute';
+            stl['z-index'] = 10;
+            stl.width = '500px';
+            stl['pointer-events'] = 'none';
+            stl.margin = 0;
+            stl.padding = 0;
+            stl.border = 0;
+            stl.outline = 0;
+
             _cyCanvas.parentNode.appendChild(_titlesContainer);
             return new LabelContainer(_titlesContainer);
         }
