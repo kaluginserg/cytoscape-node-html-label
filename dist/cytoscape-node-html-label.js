@@ -62,12 +62,8 @@
             this._renderPosition(pos);
         };
         LabelElement.prototype.init = function () {
-            this._node.setAttribute("class", this._baseElementClassName);
             var stl = this._node.style;
             stl.position = 'absolute';
-            if (this.cssClass && this.cssClass.length) {
-                this._node.classList.add(this.cssClass);
-            }
         };
         LabelElement.prototype._renderPosition = function (position) {
             var prev = this._position;
@@ -161,17 +157,16 @@
             if (cur) {
                 _cyCanvas.parentNode.removeChild(cur);
             }
-
             var stl = _titlesContainer.style;
             stl.position = 'absolute';
             stl['z-index'] = 10;
             stl.width = '500px';
             stl['pointer-events'] = 'none';
-            stl.margin = 0;
-            stl.padding = 0;
-            stl.border = 0;
-            stl.outline = 0;
-
+            stl.margin = '0px';
+            stl.padding = '0px';
+            stl.border = '0px';
+            stl.outline = '0px';
+            stl.outline = '0px';
             _cyCanvas.parentNode.appendChild(_titlesContainer);
             return new LabelContainer(_titlesContainer);
         }

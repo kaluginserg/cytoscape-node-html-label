@@ -1,5 +1,8 @@
 type IHAlign = "left" | "center" | "right";
 type IVAlign = "top" | "center" | "bottom";
+declare var module: any;
+declare var define: any;
+declare var cytoscape: any;
 
 interface CytoscapeNodeHtmlParams {
   query ?: string;
@@ -70,7 +73,7 @@ interface CytoscapeNodeHtmlParams {
       this._node = node;
       this._baseElementClassName = baseClassName;
 
-      this.init();
+      this.initStyles();
 
       if (data) {
         this.updateData(data);
@@ -123,11 +126,9 @@ interface CytoscapeNodeHtmlParams {
       this._renderPosition(pos);
     }
 
-    private init() {
-      this._node.setAttribute("class", this._baseElementClassName);
-      if (this.cssClass && this.cssClass.length) {
-        this._node.classList.add(this.cssClass);
-      }
+    private initStyles() {
+      let stl = this._node.style;
+      stl.position = 'absolute';
     }
 
     private _renderPosition(position: ICytoscapeNodeHtmlPosition) {
@@ -164,7 +165,7 @@ interface CytoscapeNodeHtmlParams {
       this._node = node;
       this._cssWrap = "cy-node-html-" + (+new Date());
       this._cssElem = this._cssWrap + "__e";
-      this.addCssToDocument();
+      // this.addCssToDocument();
       this._node.className = this._cssWrap;
       this._elements = <HashTableElements>{};
     }
@@ -214,13 +215,6 @@ interface CytoscapeNodeHtmlParams {
       stl.msTransformOrigin = origin;
       stl.transformOrigin = origin;
     }
-
-    private addCssToDocument() {
-      let stylesWrap = "position:absolute;z-index:10;width:500px;pointer-events:none;margin:0;padding:0;border:0;outline:0";
-      let stylesElem = "position:absolute";
-      document.querySelector("head").innerHTML +=
-          `<style>.${this._cssWrap}{${stylesWrap}} .${this._cssElem}{${stylesElem}}</style>`;
-    }
   }
 
   function cyNodeHtmlLabel(_cy: any, params: CytoscapeNodeHtmlParams[]) {
@@ -249,6 +243,19 @@ interface CytoscapeNodeHtmlParams {
       if (cur) {
         _cyCanvas.parentNode.removeChild(cur);
       }
+
+      let stl = _titlesContainer.style;
+      stl.position = 'absolute';
+      stl['z-index'] = 10;
+      stl.width = '500px';
+      stl['pointer-events'] = 'none';
+      stl.margin = '0px';
+      stl.padding = '0px';
+      stl.border = '0px';
+      stl.outline = '0px';
+      stl.outline = '0px';
+
+
       _cyCanvas.parentNode.appendChild(_titlesContainer);
 
       return new LabelContainer(_titlesContainer);
