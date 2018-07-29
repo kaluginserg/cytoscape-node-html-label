@@ -21,7 +21,7 @@
             this.updateParams(params);
             this._node = node;
             this._baseElementClassName = baseClassName;
-            this.init();
+            this.initStyles();
             if (data) {
                 this.updateData(data);
             }
@@ -61,7 +61,7 @@
         LabelElement.prototype.updatePosition = function (pos) {
             this._renderPosition(pos);
         };
-        LabelElement.prototype.init = function () {
+        LabelElement.prototype.initStyles = function () {
             var stl = this._node.style;
             stl.position = 'absolute';
         };
