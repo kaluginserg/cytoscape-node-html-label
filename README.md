@@ -109,3 +109,11 @@ cyInstance.nodeHtmlLabel([{
 ```
 
 Demo here: https://kaluginserg.github.io/cytoscape-node-html-label/
+
+
+## how to build and develop:
+2) Run `npm start`
+2) Create change in src/cytoscape-node-html-label.ts
+2) When finished => `npm run test`
+2) `git commit`
+2) Create new npm version: `gulp patch`
