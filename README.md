@@ -117,4 +117,6 @@ Demo here: https://kaluginserg.github.io/cytoscape-node-html-label/
 2) When finished => `npm run test`
 2) Prepare js and min files: `npm run build`
 2) `git commit`
+Then, for version update and publish:
 2) Create new npm version: `gulp patch`, `gulp feature` or `gulp release`
+2) `npm publish`
