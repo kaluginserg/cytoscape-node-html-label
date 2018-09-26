@@ -147,7 +147,7 @@
         _cy.on("remove", removeCyHandler);
         _cy.on("data", updateDataCyHandler);
         _cy.on("pan zoom", wrapCyHandler);
-        _cy.on("drag", moveCyHandler);
+        _cy.on("drag bounds", moveCyHandler);
         return _cy;
         function createLabelContainer() {
             var _cyContainer = _cy.container();
@@ -208,10 +208,6 @@
         }
         function moveCyHandler(ev) {
             _lc.updateElemPosition(ev.target.id(), getNodePosition(ev.target));
-            if (ev.target.isChild()) {
-                var parent_1 = ev.target.parent();
-                _lc.updateElemPosition(parent_1.id(), getNodePosition(parent_1));
-            }
         }
         function updateDataCyHandler(ev) {
             setTimeout(function () {

@@ -230,7 +230,7 @@ interface CytoscapeNodeHtmlParams {
     _cy.on("remove", removeCyHandler);
     _cy.on("data", updateDataCyHandler);
     _cy.on("pan zoom", wrapCyHandler);
-    _cy.on("drag", moveCyHandler);
+    _cy.on("drag bounds", moveCyHandler);
 
     return _cy;
 
@@ -301,10 +301,6 @@ interface CytoscapeNodeHtmlParams {
 
     function moveCyHandler(ev: ICyEventObject) {
       _lc.updateElemPosition(ev.target.id(), getNodePosition(ev.target));
-      if (ev.target.isChild()) {
-        const parent = ev.target.parent();
-        _lc.updateElemPosition(parent.id(), getNodePosition(parent));
-      }
     }
 
     function updateDataCyHandler(ev: ICyEventObject) {
