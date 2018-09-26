@@ -208,6 +208,10 @@
         }
         function moveCyHandler(ev) {
             _lc.updateElemPosition(ev.target.id(), getNodePosition(ev.target));
+            if (ev.target.isChild()) {
+                var parent_1 = ev.target.parent();
+                _lc.updateElemPosition(parent_1.id(), getNodePosition(parent_1));
+            }
         }
         function updateDataCyHandler(ev) {
             setTimeout(function () {

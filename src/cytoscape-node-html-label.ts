@@ -301,6 +301,10 @@ interface CytoscapeNodeHtmlParams {
 
     function moveCyHandler(ev: ICyEventObject) {
       _lc.updateElemPosition(ev.target.id(), getNodePosition(ev.target));
+      if (ev.target.isChild()) {
+        const parent = ev.target.parent();
+        _lc.updateElemPosition(parent.id(), getNodePosition(parent));
+      }
     }
 
     function updateDataCyHandler(ev: ICyEventObject) {
