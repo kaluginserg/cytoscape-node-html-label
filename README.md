@@ -70,6 +70,26 @@ cyInstance.nodeHtmlLabel(
     );
 ```
 
+If your page has multiple canvas, you can prefabricate the parent of your canvas:
+
+```html
+<canvas class="other-canvas"></canvas>
+<div id="canvas-parent">
+    <canvas class="cytoscape-canvas"></canvas>
+</div>
+```
+
+```js
+cyInstance.nodeHtmlLabel(
+[
+    {
+        ...
+    }
+],
+document.querySelector('#canvas-parent')
+    );
+```
+
 ## Example usage
 
 Code example:
