@@ -230,7 +230,7 @@ interface CytoscapeNodeHtmlParams {
     _cy.on("remove", removeCyHandler);
     _cy.on("data", updateDataCyHandler);
     _cy.on("pan zoom", wrapCyHandler);
-    _cy.on("drag", moveCyHandler);
+    _cy.on("drag bounds", moveCyHandler);
 
     return _cy;
 
