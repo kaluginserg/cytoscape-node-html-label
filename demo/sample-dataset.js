@@ -4,7 +4,7 @@ var sampleDataset = [{
   "classes": "class1"
 }, {
   "group": "nodes",
-  "data": {"id": "1", "name": "Parent"}
+  "data": {"id": "1", "name": "Parent",  "type": 1}
 },{
   "group": "nodes",
   "data": {"id": "2", "name": "Children", "parent": '1', "type": 2}
