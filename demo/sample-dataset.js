@@ -1,7 +1,16 @@
 var sampleDataset = [{
-    "group": "nodes",
-    "data": {"id": "16150999", "name": "xps plrmr altdarwkjpyzdi dinpmbmjtsy", "type": 0, "code": "7704322293"},
-    "classes": "class1"
+  "group": "nodes",
+  "data": {"id": "16150999", "name": "xps plrmr altdarwkjpyzdi dinpmbmjtsy", "type": 0, "code": "7704322293"},
+  "classes": "class1"
+}, {
+  "group": "nodes",
+  "data": {"id": "1", "name": "Parent"}
+},{
+  "group": "nodes",
+  "data": {"id": "2", "name": "Children", "parent": '1', "type": 2}
+},{
+  "group": "nodes",
+  "data": {"id": "3", "name": "Children", "parent": '1', "type": 2}
 }, {
     "group": "nodes",
     "data": {"id": "12948827", "name": "orcbqfetex ljww csesfiujzv", "type": 2},
@@ -503,4 +512,13 @@ var sampleDataset = [{
 }, {
     "group": "edges",
     "data": {"id": "e78_1521909741119", "source": "5379", "target": "3820259", "type": 2}
-}, {"group": "edges", "data": {"id": "e79_1521909741119", "source": "5379", "target": "3855775", "type": 2}}];
+}, {
+    "group": "edges",
+    "data": {"id": "e79_1521909741119", "source": "5379", "target": "3855775", "type": 2}
+}, {
+    "group": "edges",
+    "data": {"id": "e5379_1", "source": "5379", "target": "1"}
+}, {
+    "group": "edges",
+    "data": {"id": "e2_3", "source": "2", "target": "3"}
+}];
