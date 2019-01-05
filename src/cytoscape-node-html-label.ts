@@ -296,7 +296,7 @@ interface CytoscapeNodeHtmlParams {
     }
 
     function moveCyHandler(ev: ICyEventObject) {
-      //console.log('moveCyHandler');
+      // console.log('moveCyHandler');
       _lc.updateElemPosition(ev.target.id(), getNodePosition(ev.target));
     }
 
