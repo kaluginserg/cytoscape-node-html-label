@@ -5,13 +5,13 @@ declare var define: any;
 declare var cytoscape: any;
 
 interface CytoscapeNodeHtmlParams {
-  query ?: string;
-  halign ?: IHAlign;
-  valign ?: IVAlign;
-  halignBox ?: IHAlign;
-  valignBox ?: IVAlign;
-  cssClass ?: string;
-  tpl ?: (d: any) => string;
+  query?: string;
+  halign?: IHAlign;
+  valign?: IVAlign;
+  halignBox?: IHAlign;
+  valignBox?: IVAlign;
+  cssClass?: string;
+  tpl?: (d: any) => string;
 }
 
 (function () {
@@ -49,7 +49,6 @@ interface CytoscapeNodeHtmlParams {
   interface ILabelElement {
     data?: any;
     position?: ICytoscapeNodeHtmlPosition;
-    baseClassName: string;
     node: HTMLElement;
   }
 
@@ -59,21 +58,22 @@ interface CytoscapeNodeHtmlParams {
 
   class LabelElement {
     public tpl: (d: any) => string;
-    public cssClass: string;
 
     private _position: number[];
-    private _baseElementClassName: string;
     private _node: HTMLElement;
     private _align: [number, number, number, number];
 
-    constructor({node, baseClassName, position = null, data = null}: ILabelElement,
+    constructor({
+                  node,
+                  position = null,
+                  data = null
+                }: ILabelElement,
                 params: CytoscapeNodeHtmlParams) {
 
       this.updateParams(params);
       this._node = node;
-      this._baseElementClassName = baseClassName;
 
-      this.initStyles();
+      this.initStyles(params.cssClass);
 
       if (data) {
         this.updateData(data);
@@ -106,7 +106,7 @@ interface CytoscapeNodeHtmlParams {
         100 * (_align[halignBox] - 0.5),
         100 * (_align[valignBox] - 0.5)
       ];
-      this.cssClass = cssClass;
+
       this.tpl = tpl;
     }
 
@@ -126,9 +126,12 @@ interface CytoscapeNodeHtmlParams {
       this._renderPosition(pos);
     }
 
-    private initStyles() {
+    private initStyles(cssClass: string) {
       let stl = this._node.style;
       stl.position = 'absolute';
+      if (cssClass && cssClass.length) {
+        this._node.classList.add(cssClass);
+      }
     }
 
     private _renderPosition(position: ICytoscapeNodeHtmlPosition) {
@@ -158,15 +161,9 @@ interface CytoscapeNodeHtmlParams {
   class LabelContainer {
     private _elements: HashTableElements;
     private _node: HTMLElement;
-    private _cssWrap: string;
-    private _cssElem: string;
 
     constructor(node: HTMLElement) {
       this._node = node;
-      this._cssWrap = "cy-node-html-" + (+new Date());
-      this._cssElem = this._cssWrap + "__e";
-      // this.addCssToDocument();
-      this._node.className = this._cssWrap;
       this._elements = <HashTableElements>{};
     }
 
@@ -182,7 +179,6 @@ interface CytoscapeNodeHtmlParams {
 
         this._elements[id] = new LabelElement({
           node: nodeElem,
-          baseClassName: this._cssElem,
           data: payload.data,
           position: payload.position
         }, param);
@@ -190,10 +186,10 @@ interface CytoscapeNodeHtmlParams {
     }
 
     removeElemById(id: string) {
-        if (this._elements[id]) {
-            this._node.removeChild(this._elements[id].getNode());
-            delete this._elements[id];
-        }
+      if (this._elements[id]) {
+        this._node.removeChild(this._elements[id].getNode());
+        delete this._elements[id];
+      }
     }
 
     updateElemPosition(id: string, position?: ICytoscapeNodeHtmlPosition) {
@@ -230,7 +226,7 @@ interface CytoscapeNodeHtmlParams {
     _cy.on("remove", removeCyHandler);
     _cy.on("data", updateDataCyHandler);
     _cy.on("pan zoom", wrapCyHandler);
-    _cy.on("drag", moveCyHandler);
+    _cy.on("position bounds", moveCyHandler); // "bounds" - not documented event
 
     return _cy;
 
@@ -300,6 +296,7 @@ interface CytoscapeNodeHtmlParams {
     }
 
     function moveCyHandler(ev: ICyEventObject) {
+      //console.log('moveCyHandler');
       _lc.updateElemPosition(ev.target.id(), getNodePosition(ev.target));
     }
 

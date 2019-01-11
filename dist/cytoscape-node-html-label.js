@@ -17,11 +17,10 @@
     };
     var LabelElement = (function () {
         function LabelElement(_a, params) {
-            var node = _a.node, baseClassName = _a.baseClassName, _b = _a.position, position = _b === void 0 ? null : _b, _c = _a.data, data = _c === void 0 ? null : _c;
+            var node = _a.node, _b = _a.position, position = _b === void 0 ? null : _b, _c = _a.data, data = _c === void 0 ? null : _c;
             this.updateParams(params);
             this._node = node;
-            this._baseElementClassName = baseClassName;
-            this.initStyles();
+            this.initStyles(params.cssClass);
             if (data) {
                 this.updateData(data);
             }
@@ -44,7 +43,6 @@
                 100 * (_align[halignBox] - 0.5),
                 100 * (_align[valignBox] - 0.5)
             ];
-            this.cssClass = cssClass;
             this.tpl = tpl;
         };
         LabelElement.prototype.updateData = function (data) {
@@ -61,9 +59,12 @@
         LabelElement.prototype.updatePosition = function (pos) {
             this._renderPosition(pos);
         };
-        LabelElement.prototype.initStyles = function () {
+        LabelElement.prototype.initStyles = function (cssClass) {
             var stl = this._node.style;
             stl.position = 'absolute';
+            if (cssClass && cssClass.length) {
+                this._node.classList.add(cssClass);
+            }
         };
         LabelElement.prototype._renderPosition = function (position) {
             var prev = this._position;
@@ -85,9 +86,6 @@
     var LabelContainer = (function () {
         function LabelContainer(node) {
             this._node = node;
-            this._cssWrap = "cy-node-html-" + (+new Date());
-            this._cssElem = this._cssWrap + "__e";
-            this._node.className = this._cssWrap;
             this._elements = {};
         }
         LabelContainer.prototype.addOrUpdateElem = function (id, param, payload) {
@@ -103,7 +101,6 @@
                 this._node.appendChild(nodeElem);
                 this._elements[id] = new LabelElement({
                     node: nodeElem,
-                    baseClassName: this._cssElem,
                     data: payload.data,
                     position: payload.position
                 }, param);
@@ -147,7 +144,7 @@
         _cy.on("remove", removeCyHandler);
         _cy.on("data", updateDataCyHandler);
         _cy.on("pan zoom", wrapCyHandler);
-        _cy.on("drag", moveCyHandler);
+        _cy.on("drag bounds", moveCyHandler);
         return _cy;
         function createLabelContainer(parentContainer) {
             var _cyContainer = _cy.container();
