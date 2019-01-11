@@ -132,9 +132,9 @@
         };
         return LabelContainer;
     }());
-    function cyNodeHtmlLabel(_cy, params) {
+    function cyNodeHtmlLabel(_cy, params, parentContainer) {
         var _params = (!params || typeof params !== "object") ? [] : params;
-        var _lc = createLabelContainer();
+        var _lc = createLabelContainer(parentContainer);
         _cy.one("render", function (e) {
             createNodesCyHandler(e);
             wrapCyHandler(e);
@@ -146,13 +146,14 @@
         _cy.on("pan zoom", wrapCyHandler);
         _cy.on("drag bounds", moveCyHandler);
         return _cy;
-        function createLabelContainer() {
+        function createLabelContainer(parentContainer) {
             var _cyContainer = _cy.container();
             var _titlesContainer = document.createElement("div");
             var _cyCanvas = _cyContainer.querySelector("canvas");
             var cur = _cyContainer.querySelector("[class^='cy-node-html']");
+            parentContainer = parentContainer || _cyCanvas.parentNode;
             if (cur) {
-                _cyCanvas.parentNode.removeChild(cur);
+                parentContainer.removeChild(cur);
             }
             var stl = _titlesContainer.style;
             stl.position = 'absolute';
@@ -164,7 +165,7 @@
             stl.border = '0px';
             stl.outline = '0px';
             stl.outline = '0px';
-            _cyCanvas.parentNode.appendChild(_titlesContainer);
+            parentContainer.insertBefore(_titlesContainer, parentContainer.firstElementChild);
             return new LabelContainer(_titlesContainer);
         }
         function createNodesCyHandler(_a) {
@@ -241,8 +242,8 @@
         if (!cy) {
             return;
         }
-        cy("core", "nodeHtmlLabel", function (optArr) {
-            return cyNodeHtmlLabel(this, optArr);
+        cy("core", "nodeHtmlLabel", function (optArr, parentContainer) {
+            return cyNodeHtmlLabel(this, optArr, parentContainer);
         });
     };
     if (typeof module !== "undefined" && module.exports) {

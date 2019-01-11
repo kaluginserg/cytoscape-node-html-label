@@ -213,9 +213,9 @@ interface CytoscapeNodeHtmlParams {
     }
   }
 
-  function cyNodeHtmlLabel(_cy: any, params: CytoscapeNodeHtmlParams[]) {
+  function cyNodeHtmlLabel(_cy: any, params: CytoscapeNodeHtmlParams[], parentContainer: Element) {
     const _params = (!params || typeof params !== "object") ? [] : params;
-    const _lc = createLabelContainer();
+    const _lc = createLabelContainer(parentContainer);
 
     _cy.one("render", (e: any) => {
       createNodesCyHandler(e);
@@ -230,14 +230,15 @@ interface CytoscapeNodeHtmlParams {
 
     return _cy;
 
-    function createLabelContainer(): LabelContainer {
+    function createLabelContainer(parentContainer: Element): LabelContainer {
       let _cyContainer = _cy.container();
       let _titlesContainer = document.createElement("div");
 
       let _cyCanvas = _cyContainer.querySelector("canvas");
       let cur = _cyContainer.querySelector("[class^='cy-node-html']");
+      parentContainer = parentContainer || _cyCanvas.parentNode;
       if (cur) {
-        _cyCanvas.parentNode.removeChild(cur);
+        parentContainer.removeChild(cur);
       }
 
       let stl = _titlesContainer.style;
@@ -251,8 +252,7 @@ interface CytoscapeNodeHtmlParams {
       stl.outline = '0px';
       stl.outline = '0px';
 
-
-      _cyCanvas.parentNode.appendChild(_titlesContainer);
+      parentContainer.insertBefore(_titlesContainer, parentContainer.firstElementChild);
 
       return new LabelContainer(_titlesContainer);
     }
@@ -339,8 +339,8 @@ interface CytoscapeNodeHtmlParams {
       return;
     } // can't register if cytoscape unspecified
 
-    cy("core", "nodeHtmlLabel", function (optArr: any) {
-      return cyNodeHtmlLabel(this, optArr);
+    cy("core", "nodeHtmlLabel", function (optArr: any, parentContainer: Element) {
+      return cyNodeHtmlLabel(this, optArr, parentContainer);
     });
   };
 
