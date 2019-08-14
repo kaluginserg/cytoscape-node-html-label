@@ -224,7 +224,8 @@ interface CytoscapeNodeHtmlParams {
     _cy.on("add", addCyHandler);
     _cy.on("layoutstop", layoutstopHandler);
     _cy.on("remove", removeCyHandler);
-    _cy.on("data", updateDataCyHandler);
+    _cy.on("data", updateDataOrStyleCyHandler);
+    _cy.on("style", updateDataOrStyleCyHandler);
     _cy.on("pan zoom", wrapCyHandler);
     _cy.on("position bounds", moveCyHandler); // "bounds" - not documented event
 
@@ -300,7 +301,7 @@ interface CytoscapeNodeHtmlParams {
       _lc.updateElemPosition(ev.target.id(), getNodePosition(ev.target));
     }
 
-    function updateDataCyHandler(ev: ICyEventObject) {
+    function updateDataOrStyleCyHandler(ev: ICyEventObject) {
       setTimeout(() => {
         let target = ev.target;
         let param = $$find(_params.slice().reverse(), x => target.is(x.query));
