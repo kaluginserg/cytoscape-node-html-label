@@ -142,7 +142,8 @@
         _cy.on("add", addCyHandler);
         _cy.on("layoutstop", layoutstopHandler);
         _cy.on("remove", removeCyHandler);
-        _cy.on("data", updateDataCyHandler);
+        _cy.on("data", updateDataOrStyleCyHandler);
+        _cy.on("style", updateDataOrStyleCyHandler);
         _cy.on("pan zoom", wrapCyHandler);
         _cy.on("position bounds", moveCyHandler);
         return _cy;
@@ -206,7 +207,7 @@
         function moveCyHandler(ev) {
             _lc.updateElemPosition(ev.target.id(), getNodePosition(ev.target));
         }
-        function updateDataCyHandler(ev) {
+        function updateDataOrStyleCyHandler(ev) {
             setTimeout(function () {
                 var target = ev.target;
                 var param = $$find(_params.slice().reverse(), function (x) { return target.is(x.query); });
