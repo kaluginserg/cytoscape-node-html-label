@@ -4,15 +4,15 @@ cytoscape-node-html-label
 
 ## Description
 
-This extension provide ability adding labels for Cytoscape nodes. Simple example:
+This extension provides ability to add labels for Cytoscape nodes. Simple example:
 
 `cyInstance.nodeHtmlLabel( [{ tpl: d => '<div>' + d + '</div>' }] );`
 
 Demo: https://kaluginserg.github.io/cytoscape-node-html-label/
 
-## Fitures
-- optimised for high performance with high number nodes, for smooth panning and zooming.
-- customizable any labels with different templates.
+## Features
+- optimized for high performance with high number of nodes, for smooth panning and zooming.
+- customizable labels with different templates.
 
 ## Dependencies
 
@@ -24,9 +24,9 @@ Demo: https://kaluginserg.github.io/cytoscape-node-html-label/
 Download the library:
  * via npm: `npm install cytoscape-node-html-label`,
  * via bower: `bower install cytoscape-node-html-label`, or
- * via direct download in the repository (probably from a tag).
+ * via direct download from the repository (probably from a tag).
 
-#### Plain HTML/JS has the extension registered for you automatically:
+#### Plain HTML/JS has extension registered for you automatically:
 ```html
 <script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
 <script src="cytoscape-node-html-label.js"></script>
@@ -52,7 +52,7 @@ require(['cytoscape', 'cytoscape-node-html-label'], function( cytoscape, nodeHtm
 
 ## API
 
-nodeHtmlLabel parameter is an array of options:
+`nodeHtmlLabel` parameter is an array of options:
 
 ```js
 cyInstance.nodeHtmlLabel(
@@ -70,7 +70,7 @@ cyInstance.nodeHtmlLabel(
     );
 ```
 
-## Example usage
+## Usage example
 
 Code example:
 ```js
@@ -111,12 +111,13 @@ cyInstance.nodeHtmlLabel([{
 Demo here: https://kaluginserg.github.io/cytoscape-node-html-label/
 
 
-## how to build and develop:
-2) Run `npm start`
-2) Create change in src/cytoscape-node-html-label.ts
-2) When finished => `npm run test`
-2) Prepare js and min files: `npm run build`
-2) `git commit`
+## How to build and develop:
+1) Run `npm start`
+1) Create change in src/cytoscape-node-html-label.ts
+1) When finished => `npm run test`
+1) Prepare js and min files: `npm run build`
+1) `git commit`
+
 Then, for version update and publish:
-2) Create new npm version: `gulp patch`, `gulp feature` or `gulp release`
-2) `npm publish`
+1) Create new npm version: `gulp patch`, `gulp feature` or `gulp release`
+1) `npm publish`
