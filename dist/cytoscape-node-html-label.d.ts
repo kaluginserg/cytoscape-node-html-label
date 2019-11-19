@@ -12,3 +12,6 @@ interface CytoscapeNodeHtmlParams {
     cssClass?: string;
     tpl?: (d: any) => string;
 }
+interface CytoscapeContainerParams {
+    enablePointerEvents?: boolean;
+}
