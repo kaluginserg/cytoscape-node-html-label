@@ -55,19 +55,31 @@ require(['cytoscape', 'cytoscape-node-html-label'], function( cytoscape, nodeHtm
 `nodeHtmlLabel` parameter is an array of options:
 
 ```js
-cyInstance.nodeHtmlLabel(
-[
-    {
-        query: 'node', // cytoscape query selector
-        halign: 'center', // title vertical position. Can be 'left',''center, 'right'
-        valign: 'center', // title vertical position. Can be 'top',''center, 'bottom'
-        halignBox: 'center', // title vertical position. Can be 'left',''center, 'right'
-        valignBox: 'center', // title relative box vertical position. Can be 'top',''center, 'bottom'
-        cssClass: '', // any classes will be as attribute of <div> container for every title
-        tpl: function(data){return '<span>' + data + '</span>';} // your html template here
+cyInstance.nodeHtmlLabel([
+  {
+    query: 'node', // cytoscape query selector
+    halign: 'center', // title vertical position. Can be 'left',''center, 'right'
+    valign: 'center', // title vertical position. Can be 'top',''center, 'bottom'
+    halignBox: 'center', // title vertical position. Can be 'left',''center, 'right'
+    valignBox: 'center', // title relative box vertical position. Can be 'top',''center, 'bottom'
+    cssClass: '', // any classes will be as attribute of <div> container for every title
+    tpl(data) {
+      return '<span>' + data + '</span>'; // your html template here
     }
-]
-    );
+  }
+]);
+```
+
+To make links clickable inside your labels, you need to pass `enablePointerEvents: true` as the 3rd argument to `nodeHtmlLabel`:
+
+```js
+cyInstance.nodeHtmlLabel([
+  {
+    ...
+  }
+], {
+  enablePointerEvents: true
+});
 ```
 
 ## Usage example

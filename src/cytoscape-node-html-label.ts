@@ -14,6 +14,10 @@ interface CytoscapeNodeHtmlParams {
   tpl?: (d: any) => string;
 }
 
+interface CytoscapeContainerParams {
+  enablePointerEvents?: boolean;
+}
+
 (function () {
   "use strict";
   const $$find = function <T>(arr: T[], predicate: (a: T) => boolean) {
@@ -213,7 +217,7 @@ interface CytoscapeNodeHtmlParams {
     }
   }
 
-  function cyNodeHtmlLabel(_cy: any, params: CytoscapeNodeHtmlParams[]) {
+  function cyNodeHtmlLabel(_cy: any, params: CytoscapeNodeHtmlParams[], options?: CytoscapeContainerParams) {
     const _params = (!params || typeof params !== "object") ? [] : params;
     const _lc = createLabelContainer();
 
@@ -245,13 +249,15 @@ interface CytoscapeNodeHtmlParams {
       stl.position = 'absolute';
       stl['z-index'] = 10;
       stl.width = '500px';
-      stl['pointer-events'] = 'none';
       stl.margin = '0px';
       stl.padding = '0px';
       stl.border = '0px';
       stl.outline = '0px';
       stl.outline = '0px';
 
+      if (options && options.enablePointerEvents !== true) {
+        stl['pointer-events'] = 'none';
+      }
 
       _cyCanvas.parentNode.appendChild(_titlesContainer);
 

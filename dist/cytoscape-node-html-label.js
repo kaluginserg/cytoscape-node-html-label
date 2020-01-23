@@ -132,7 +132,7 @@
         };
         return LabelContainer;
     }());
-    function cyNodeHtmlLabel(_cy, params) {
+    function cyNodeHtmlLabel(_cy, params, options) {
         var _params = (!params || typeof params !== "object") ? [] : params;
         var _lc = createLabelContainer();
         _cy.one("render", function (e) {
@@ -159,12 +159,14 @@
             stl.position = 'absolute';
             stl['z-index'] = 10;
             stl.width = '500px';
-            stl['pointer-events'] = 'none';
             stl.margin = '0px';
             stl.padding = '0px';
             stl.border = '0px';
             stl.outline = '0px';
             stl.outline = '0px';
+            if (options && options.enablePointerEvents !== true) {
+                stl['pointer-events'] = 'none';
+            }
             _cyCanvas.parentNode.appendChild(_titlesContainer);
             return new LabelContainer(_titlesContainer);
         }
