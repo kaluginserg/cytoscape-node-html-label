@@ -364,3 +364,9 @@ interface CytoscapeContainerParams {
   }
 
 }());
+
+export declare namespace cytoscape {
+  interface Core {
+    cyNodeHtmlLabel: (_cy: CyTypes.Core, params: CytoscapeNodeHtmlParams[], options?: CytoscapeContainerParams) => void;
+  }
+}
