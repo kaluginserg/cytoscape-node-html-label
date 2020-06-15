@@ -61,7 +61,7 @@
         };
         LabelElement.prototype.initStyles = function (cssClass) {
             var stl = this._node.style;
-            stl.position = 'absolute';
+            stl.position = "absolute";
             if (cssClass && cssClass.length) {
                 this._node.classList.add(cssClass);
             }
@@ -156,16 +156,16 @@
                 _cyCanvas.parentNode.removeChild(cur);
             }
             var stl = _titlesContainer.style;
-            stl.position = 'absolute';
-            stl['z-index'] = 10;
-            stl.width = '500px';
-            stl.margin = '0px';
-            stl.padding = '0px';
-            stl.border = '0px';
-            stl.outline = '0px';
-            stl.outline = '0px';
+            stl.position = "absolute";
+            stl["z-index"] = 10;
+            stl.width = "500px";
+            stl.margin = "0px";
+            stl.padding = "0px";
+            stl.border = "0px";
+            stl.outline = "0px";
+            stl.outline = "0px";
             if (options && options.enablePointerEvents !== true) {
-                stl['pointer-events'] = 'none';
+                stl["pointer-events"] = "none";
             }
             _cyCanvas.parentNode.appendChild(_titlesContainer);
             return new LabelContainer(_titlesContainer);

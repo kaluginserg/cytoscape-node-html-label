@@ -1,8 +1,10 @@
+import * as CyTypes from "cytoscape";
+
 type IHAlign = "left" | "center" | "right";
 type IVAlign = "top" | "center" | "bottom";
 declare var module: any;
 declare var define: any;
-declare var cytoscape: any;
+declare var cytoscape: CyTypes.Core;
 
 interface CytoscapeNodeHtmlParams {
   query?: string;
@@ -36,12 +38,6 @@ interface CytoscapeContainerParams {
     }
     return undefined;
   };
-
-  interface ICyEventObject {
-    cy: any;
-    type: string;
-    target: any;
-  }
 
   interface ICytoscapeNodeHtmlPosition {
     x: number;
@@ -132,7 +128,7 @@ interface CytoscapeContainerParams {
 
     private initStyles(cssClass: string) {
       let stl = this._node.style;
-      stl.position = 'absolute';
+      stl.position = "absolute";
       if (cssClass && cssClass.length) {
         this._node.classList.add(cssClass);
       }
@@ -217,7 +213,7 @@ interface CytoscapeContainerParams {
     }
   }
 
-  function cyNodeHtmlLabel(_cy: any, params: CytoscapeNodeHtmlParams[], options?: CytoscapeContainerParams) {
+  function cyNodeHtmlLabel(_cy: CyTypes.Core, params: CytoscapeNodeHtmlParams[], options?: CytoscapeContainerParams) {
     const _params = (!params || typeof params !== "object") ? [] : params;
     const _lc = createLabelContainer();
 
@@ -246,17 +242,17 @@ interface CytoscapeContainerParams {
       }
 
       let stl = _titlesContainer.style;
-      stl.position = 'absolute';
-      stl['z-index'] = 10;
-      stl.width = '500px';
-      stl.margin = '0px';
-      stl.padding = '0px';
-      stl.border = '0px';
-      stl.outline = '0px';
-      stl.outline = '0px';
+      stl.position = "absolute";
+      stl["z-index"] = 10;
+      stl.width = "500px";
+      stl.margin = "0px";
+      stl.padding = "0px";
+      stl.border = "0px";
+      stl.outline = "0px";
+      stl.outline = "0px";
 
       if (options && options.enablePointerEvents !== true) {
-        stl['pointer-events'] = 'none';
+        stl["pointer-events"] = "none";
       }
 
       _cyCanvas.parentNode.appendChild(_titlesContainer);
@@ -264,9 +260,9 @@ interface CytoscapeContainerParams {
       return new LabelContainer(_titlesContainer);
     }
 
-    function createNodesCyHandler({cy}: ICyEventObject) {
+    function createNodesCyHandler({cy}: CyTypes.EventObject) {
       _params.forEach(x => {
-        cy.elements(x.query).forEach((d: any) => {
+        cy.elements(x.query).forEach(d => {
           if (d.isNode()) {
             _lc.addOrUpdateElem(d.id(), x, {
               position: getNodePosition(d),
@@ -277,7 +273,7 @@ interface CytoscapeContainerParams {
       });
     }
 
-    function addCyHandler(ev: ICyEventObject) {
+    function addCyHandler(ev: CyTypes.EventObject) {
       let target = ev.target;
       let param = $$find(_params.slice().reverse(), x => target.is(x.query));
       if (param) {
@@ -288,9 +284,9 @@ interface CytoscapeContainerParams {
       }
     }
 
-    function layoutstopHandler({cy}: ICyEventObject) {
+    function layoutstopHandler({cy}: CyTypes.EventObject) {
       _params.forEach(x => {
-        cy.elements(x.query).forEach((d: any) => {
+        cy.elements(x.query).forEach(d => {
           if (d.isNode()) {
             _lc.updateElemPosition(d.id(), getNodePosition(d));
           }
@@ -298,16 +294,16 @@ interface CytoscapeContainerParams {
       });
     }
 
-    function removeCyHandler(ev: ICyEventObject) {
+    function removeCyHandler(ev: CyTypes.EventObject) {
       _lc.removeElemById(ev.target.id());
     }
 
-    function moveCyHandler(ev: ICyEventObject) {
+    function moveCyHandler(ev: CyTypes.EventObject) {
       // console.log('moveCyHandler');
       _lc.updateElemPosition(ev.target.id(), getNodePosition(ev.target));
     }
 
-    function updateDataOrStyleCyHandler(ev: ICyEventObject) {
+    function updateDataOrStyleCyHandler(ev: CyTypes.EventObject) {
       setTimeout(() => {
         let target = ev.target;
         let param = $$find(_params.slice().reverse(), x => target.is(x.query));
@@ -322,14 +318,14 @@ interface CytoscapeContainerParams {
       }, 0);
     }
 
-    function wrapCyHandler({cy}: ICyEventObject) {
+    function wrapCyHandler({cy}: CyTypes.EventObject) {
       _lc.updatePanZoom({
         pan: cy.pan(),
         zoom: cy.zoom()
       });
     }
 
-    function getNodePosition(node: any): ICytoscapeNodeHtmlPosition {
+    function getNodePosition(node: CyTypes.SingularElementReturnValue): ICytoscapeNodeHtmlPosition {
       return {
         w: node.width(),
         h: node.height(),
@@ -352,7 +348,7 @@ interface CytoscapeContainerParams {
   };
 
   if (typeof module !== "undefined" && module.exports) { // expose as a commonjs module
-    module.exports = function (cy: any) {
+    module.exports = function (cy: CyTypes.Core) {
       register(cy);
     };
   } else {
