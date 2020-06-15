@@ -209,18 +209,25 @@
         function moveCyHandler(ev) {
             _lc.updateElemPosition(ev.target.id(), getNodePosition(ev.target));
         }
+        function updateElement(element) {
+            var param = $$find(_params.slice().reverse(), function (x) { return element.is(x.query); });
+            if (param) {
+                _lc.addOrUpdateElem(element.id(), param, {
+                    position: getNodePosition(element),
+                    data: element.data()
+                });
+            }
+            else {
+                _lc.removeElemById(element.id());
+            }
+        }
         function updateDataOrStyleCyHandler(ev) {
             setTimeout(function () {
-                var target = ev.target;
-                var param = $$find(_params.slice().reverse(), function (x) { return target.is(x.query); });
-                if (param) {
-                    _lc.addOrUpdateElem(target.id(), param, {
-                        position: getNodePosition(target),
-                        data: target.data()
-                    });
+                if (ev.target === ev.cy) {
+                    ev.cy.elements().forEach(updateElement);
                 }
                 else {
-                    _lc.removeElemById(target.id());
+                    updateElement(ev.target);
                 }
             }, 0);
         }
