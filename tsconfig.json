@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
+    "declaration": true,
     "target": "es5",
-    "module": "None",
+    "module": "es6",
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
