@@ -6,6 +6,7 @@ var tag_version = require('gulp-tag-version');
 var rename = require('gulp-rename');
 
 var uglify = require('gulp-uglify');
+var to5 = require('gulp-6to5');
 
 var Server = require('karma').Server;
 
@@ -38,6 +39,7 @@ gulp.task('test', function (done) {
 
 gulp.task('min', function () {
   return gulp.src(['dist/cytoscape-node-html-label.js'])
+    .pipe(to5())
     .pipe(uglify())
     .pipe(rename({suffix: '.min'}))
     .pipe(gulp.dest('dist', {ext: '.min.js'}));
