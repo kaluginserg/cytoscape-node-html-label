@@ -244,8 +244,8 @@
         if (!cy) {
             return;
         }
-        cy("core", "nodeHtmlLabel", function (optArr) {
-            return cyNodeHtmlLabel(this, optArr);
+        cy("core", "nodeHtmlLabel", function (optArr, options) {
+            return cyNodeHtmlLabel(this, optArr, options);
         });
     };
     if (typeof module !== "undefined" && module.exports) {
