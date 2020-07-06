@@ -346,8 +346,8 @@ interface CytoscapeContainerParams {
       return;
     } // can't register if cytoscape unspecified
 
-    cy("core", "nodeHtmlLabel", function (optArr: any) {
-      return cyNodeHtmlLabel(this, optArr);
+    cy("core", "nodeHtmlLabel", function (optArr: any, options?: any) {
+      return cyNodeHtmlLabel(this, optArr, options);
     });
   };
 
