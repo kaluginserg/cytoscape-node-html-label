@@ -307,17 +307,24 @@ interface CytoscapeContainerParams {
       _lc.updateElemPosition(ev.target.id(), getNodePosition(ev.target));
     }
 
+    function updateElement(element: any) {
+      let param = $$find(_params.slice().reverse(), x => element.is(x.query));
+      if (param) {
+        _lc.addOrUpdateElem(element.id(), param, {
+          position: getNodePosition(element),
+          data: element.data()
+        });
+      } else {
+        _lc.removeElemById(element.id());
+      }
+    }
+
     function updateDataOrStyleCyHandler(ev: ICyEventObject) {
       setTimeout(() => {
-        let target = ev.target;
-        let param = $$find(_params.slice().reverse(), x => target.is(x.query));
-        if (param) {
-          _lc.addOrUpdateElem(target.id(), param, {
-            position: getNodePosition(target),
-            data: target.data()
-          });
+        if (ev.target === ev.cy) {
+          ev.cy.elements().forEach(updateElement);
         } else {
-          _lc.removeElemById(target.id());
+          updateElement(ev.target);
         }
       }, 0);
     }
