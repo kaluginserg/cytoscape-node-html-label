@@ -115,10 +115,18 @@ interface CytoscapeContainerParams {
     }
 
     updateData(data: any) {
-      try {
-        this._node.innerHTML = this.tpl(data);
-      } catch (err) {
-        console.error(err);
+      while (this._node.firstChild) {
+        this._node.removeChild(this._node.firstChild);
+      }
+      const children = new DOMParser()
+                           .parseFromString(this.tpl(data), 'text/html')
+                           .body.children;
+      for (const el of Array.from(children)) {
+        try {
+          this._node.appendChild(el);
+        } catch (err) {
+          console.error(err);
+        }
       }
     }
 
