@@ -46,11 +46,15 @@
             this.tpl = tpl;
         };
         LabelElement.prototype.updateData = function (data) {
-            try {
-                this._node.innerHTML = this.tpl(data);
+            while (this._node.firstChild) {
+                this._node.removeChild(this._node.firstChild);
             }
-            catch (err) {
-                console.error(err);
+            var children = new DOMParser()
+                .parseFromString(this.tpl(data), "text/html")
+                .body.children;
+            for (var i = 0; i < children.length; ++i) {
+                var el = children[i];
+                this._node.appendChild(el);
             }
         };
         LabelElement.prototype.getNode = function () {
@@ -61,7 +65,7 @@
         };
         LabelElement.prototype.initStyles = function (cssClass) {
             var stl = this._node.style;
-            stl.position = 'absolute';
+            stl.position = "absolute";
             if (cssClass && cssClass.length) {
                 this._node.classList.add(cssClass);
             }

@@ -118,15 +118,14 @@ interface CytoscapeContainerParams {
       while (this._node.firstChild) {
         this._node.removeChild(this._node.firstChild);
       }
+
       const children = new DOMParser()
-                           .parseFromString(this.tpl(data), 'text/html')
-                           .body.children;
-      for (const el of Array.from(children)) {
-        try {
-          this._node.appendChild(el);
-        } catch (err) {
-          console.error(err);
-        }
+          .parseFromString(this.tpl(data), "text/html")
+          .body.children;
+
+      for (let i = 0; i < children.length; ++i) {
+        const el = children[i];
+        this._node.appendChild(el);
       }
     }
 
@@ -140,7 +139,7 @@ interface CytoscapeContainerParams {
 
     private initStyles(cssClass: string) {
       let stl = this._node.style;
-      stl.position = 'absolute';
+      stl.position = "absolute";
       if (cssClass && cssClass.length) {
         this._node.classList.add(cssClass);
       }
