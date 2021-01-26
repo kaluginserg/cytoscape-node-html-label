@@ -24,8 +24,9 @@ interface CytoscapeContainerParams {
     if (typeof predicate !== "function") {
       throw new TypeError("predicate must be a function");
     }
-    let length = arr.length >>> 0;
-    let thisArg = arguments[1];
+    const length = arr.length >>> 0;
+    // eslint-disable-next-line prefer-rest-params
+    const thisArg = arguments[1];
     let value;
 
     for (let i = 0; i < length; i++) {
@@ -89,6 +90,7 @@ interface CytoscapeContainerParams {
 
     updateParams({
                    tpl = () => "",
+                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
                    cssClass = null,
                    halign = "center",
                    valign = "center",
@@ -138,7 +140,7 @@ interface CytoscapeContainerParams {
     }
 
     private initStyles(cssClass: string) {
-      let stl = this._node.style;
+      const stl = this._node.style;
       stl.position = "absolute";
       if (cssClass && cssClass.length) {
         this._node.classList.add(cssClass);
@@ -153,10 +155,10 @@ interface CytoscapeContainerParams {
       if (!prev || prev[0] !== x || prev[1] !== y) {
         this._position = [x, y];
 
-        let valRel = `translate(${this._align[2]}%,${this._align[3]}%) `;
-        let valAbs = `translate(${x.toFixed(2)}px,${y.toFixed(2)}px) `;
-        let val = valRel + valAbs;
-        let stl = <any>this._node.style;
+        const valRel = `translate(${this._align[2]}%,${this._align[3]}%) `;
+        const valAbs = `translate(${x.toFixed(2)}px,${y.toFixed(2)}px) `;
+        const val = valRel + valAbs;
+        const stl = <any>this._node.style;
         stl.webkitTransform = val;
         stl.msTransform = val;
         stl.transform = val;
@@ -179,13 +181,13 @@ interface CytoscapeContainerParams {
     }
 
     addOrUpdateElem(id: string, param: CytoscapeNodeHtmlParams, payload: { data?: any, position?: ICytoscapeNodeHtmlPosition } = {}) {
-      let cur = this._elements[id];
+      const cur = this._elements[id];
       if (cur) {
         cur.updateParams(param);
         cur.updateData(payload.data);
         cur.updatePosition(payload.position);
       } else {
-        let nodeElem = document.createElement("div");
+        const nodeElem = document.createElement("div");
         this._node.appendChild(nodeElem);
 
         this._elements[id] = new LabelElement({
@@ -204,7 +206,7 @@ interface CytoscapeContainerParams {
     }
 
     updateElemPosition(id: string, position?: ICytoscapeNodeHtmlPosition) {
-      let ele = this._elements[id];
+      const ele = this._elements[id];
       if (ele) {
         ele.updatePosition(position);
       }
@@ -243,16 +245,16 @@ interface CytoscapeContainerParams {
     return _cy;
 
     function createLabelContainer(): LabelContainer {
-      let _cyContainer = _cy.container();
-      let _titlesContainer = document.createElement("div");
+      const _cyContainer = _cy.container();
+      const _titlesContainer = document.createElement("div");
 
-      let _cyCanvas = _cyContainer.querySelector("canvas");
-      let cur = _cyContainer.querySelector("[class^='cy-node-html']");
+      const _cyCanvas = _cyContainer.querySelector("canvas");
+      const cur = _cyContainer.querySelector("[class^='cy-node-html']");
       if (cur) {
         _cyCanvas.parentNode.removeChild(cur);
       }
 
-      let stl = _titlesContainer.style;
+      const stl = _titlesContainer.style;
       stl.position = 'absolute';
       stl['z-index'] = 10;
       stl.width = '500px';
@@ -285,8 +287,8 @@ interface CytoscapeContainerParams {
     }
 
     function addCyHandler(ev: ICyEventObject) {
-      let target = ev.target;
-      let param = $$find(_params.slice().reverse(), x => target.is(x.query));
+      const target = ev.target;
+      const param = $$find(_params.slice().reverse(), x => target.is(x.query));
       if (param) {
         _lc.addOrUpdateElem(target.id(), param, {
           position: getNodePosition(target),
@@ -316,8 +318,8 @@ interface CytoscapeContainerParams {
 
     function updateDataOrStyleCyHandler(ev: ICyEventObject) {
       setTimeout(() => {
-        let target = ev.target;
-        let param = $$find(_params.slice().reverse(), x => target.is(x.query));
+        const target = ev.target;
+        const param = $$find(_params.slice().reverse(), x => target.is(x.query));
         if (param) {
           _lc.addOrUpdateElem(target.id(), param, {
             position: getNodePosition(target),
@@ -347,7 +349,7 @@ interface CytoscapeContainerParams {
   }
 
   // registers the extension on a cytoscape lib ref
-  let register = function (cy: any) {
+  const register = function (cy: any) {
 
     if (!cy) {
       return;
