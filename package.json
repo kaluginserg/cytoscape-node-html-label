@@ -9,6 +9,7 @@
   },
   "scripts": {
     "test": "gulp test",
+    "test-firefox": "TEST_ON_FIREFOX=true gulp test",
     "build": "tsc --declaration && gulp min",
     "lint": "eslint src --ext .ts",
     "start": "tsc --watch --declaration"
