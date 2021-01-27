@@ -320,7 +320,7 @@ interface CytoscapeContainerParams {
       setTimeout(() => {
         const target = ev.target;
         const param = $$find(_params.slice().reverse(), x => target.is(x.query));
-        if (param) {
+        if (param && !target.removed()) {
           _lc.addOrUpdateElem(target.id(), param, {
             position: getNodePosition(target),
             data: target.data()

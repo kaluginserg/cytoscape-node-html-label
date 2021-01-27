@@ -217,7 +217,7 @@
             setTimeout(function () {
                 var target = ev.target;
                 var param = $$find(_params.slice().reverse(), function (x) { return target.is(x.query); });
-                if (param) {
+                if (param && !target.removed()) {
                     _lc.addOrUpdateElem(target.id(), param, {
                         position: getNodePosition(target),
                         data: target.data()
