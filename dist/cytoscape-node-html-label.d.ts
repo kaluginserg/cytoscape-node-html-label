@@ -3,7 +3,7 @@ declare type IVAlign = "top" | "center" | "bottom";
 declare var module: any;
 declare var define: any;
 declare var cytoscape: any;
-export interface CytoscapeNodeHtmlParams {
+interface CytoscapeNodeHtmlParams {
     query?: string;
     halign?: IHAlign;
     valign?: IVAlign;
